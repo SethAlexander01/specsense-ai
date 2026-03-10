@@ -1,7 +1,9 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  // pdf-parse uses Node.js APIs only available server-side
+  serverExternalPackages: ['pdf-parse'],
+  experimental: {},
+}
 
-export default nextConfig;
+export default nextConfig
