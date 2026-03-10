@@ -99,7 +99,7 @@ function BillingContent() {
                   <p className="font-medium text-slate-900">No active plan</p>
                   <p className="text-sm text-slate-500 mt-1">Choose a plan below to unlock full access</p>
                 </div>
-                <Button onClick={() => handleUpgrade()} loading={loading}>
+                <Button onClick={ => handleUpgrade()} loading={loading}>
                   <Zap className="h-4 w-4" />
                   View plans
                 </Button>
