@@ -131,7 +131,7 @@ export default async function DashboardPage() {
         )}
       </Card>
 
-      {!isPro && (
+      {!isPaid && (
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-6 flex items-center justify-between">
           <div>
             <p className="font-semibold text-blue-900">Upgrade to Pro</p>
