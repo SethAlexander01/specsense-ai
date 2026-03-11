@@ -11,15 +11,27 @@ function getAdminClient() {
   )
 }
 
+const PRICE_TO_PLAN: Record<string, string> = {
+  [process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID ?? '']: 'starter',
+  [process.env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_PRICE_ID ?? '']: 'professional',
+  [process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_PRICE_ID ?? '']: 'enterprise',
+}
+
+function getPlanFromSubscription(subscription: Stripe.Subscription): string {
+  const priceId = subscription.items.data[0]?.price?.id ?? ''
+  return PRICE_TO_PLAN[priceId] ?? 'starter'
+}
+
 async function updateSubscription(subscription: Stripe.Subscription) {
   const supabase = getAdminClient()
   const userId = subscription.metadata?.supabase_user_id
   if (!userId) return
 
   const isActive = ['active', 'trialing'].includes(subscription.status)
+  const plan = isActive ? getPlanFromSubscription(subscription) : 'free'
 
   await supabase.from('profiles').update({
-    plan: isActive ? 'pro' : 'free',
+    plan,
     stripe_subscription_id: subscription.id,
     stripe_subscription_status: subscription.status,
     updated_at: new Date().toISOString(),

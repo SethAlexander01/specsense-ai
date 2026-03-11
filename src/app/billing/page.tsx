@@ -62,7 +62,15 @@ function BillingContent() {
     }
   }
 
-  const isPro = profile?.plan === 'pro'
+  const PAID_PLANS = ['starter', 'professional', 'enterprise']
+  const isPaid = PAID_PLANS.includes(profile?.plan ?? '')
+
+  const PLAN_LABELS: Record<string, { name: string; price: string }> = {
+    starter:      { name: 'Starter', price: '$79/month' },
+    professional: { name: 'Professional', price: '$249/month' },
+    enterprise:   { name: 'Enterprise', price: '$499/month' },
+  }
+  const currentPlanInfo = profile?.plan ? PLAN_LABELS[profile.plan] : null
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -79,14 +87,14 @@ function BillingContent() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <h2 className="font-semibold text-slate-900">Current plan</h2>
-              <Badge variant={isPro ? 'success' : 'default'}>{isPro ? 'Pro' : 'Free'}</Badge>
+              <Badge variant={isPaid ? 'success' : 'default'}>{currentPlanInfo ? currentPlanInfo.name : 'Free'}</Badge>
             </div>
           </CardHeader>
           <CardContent>
-            {isPro ? (
+            {isPaid ? (
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-slate-900">Pro — $249/month</p>
+                  <p className="font-medium text-slate-900">{currentPlanInfo?.name} — {currentPlanInfo?.price}</p>
                   <p className="text-sm text-slate-500 mt-1">Unlimited documents, AI chat, PDF export</p>
                 </div>
                 <Button variant="outline" onClick={handlePortal} loading={loading}>
@@ -131,21 +139,24 @@ function BillingContent() {
                   </li>
                 ))}
               </ul>
-              {!isPro && (
+              {profile?.plan !== 'starter' && !isPaid && (
                 <Button variant="outline" className="w-full" onClick={() => handleUpgrade('starter')} loading={loading}>
                   <Zap className="h-4 w-4" />
                   Get started
                 </Button>
               )}
+              {profile?.plan === 'starter' && (
+                <Badge variant="success" className="w-full justify-center py-1">Current plan</Badge>
+              )}
             </CardContent>
           </Card>
 
           {/* Professional */}
-          <Card className={isPro ? 'ring-2 ring-blue-500' : 'border-blue-200 bg-blue-50/30'}>
+          <Card className={profile?.plan === 'professional' ? 'ring-2 ring-blue-500' : 'border-blue-200 bg-blue-50/30'}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-slate-900">Professional</h3>
-                {isPro && <Badge variant="success">Current plan</Badge>}
+                {profile?.plan === 'professional' && <Badge variant="success">Current plan</Badge>}
               </div>
               <p className="text-3xl font-bold text-slate-900 mt-2">$249<span className="text-base font-normal text-slate-500">/mo</span></p>
               <p className="text-xs text-slate-500 mt-1">200 drawings/month</p>
@@ -165,10 +176,10 @@ function BillingContent() {
                   </li>
                 ))}
               </ul>
-              {!isPro && (
+              {profile?.plan !== 'professional' && profile?.plan !== 'enterprise' && (
                 <Button className="w-full" onClick={() => handleUpgrade('professional')} loading={loading}>
                   <Zap className="h-4 w-4" />
-                  Upgrade now
+                  {isPaid ? 'Switch plan' : 'Upgrade now'}
                 </Button>
               )}
             </CardContent>
@@ -197,7 +208,9 @@ function BillingContent() {
                   </li>
                 ))}
               </ul>
-              {!isPro && (
+              {profile?.plan === 'enterprise' ? (
+                <Badge variant="success" className="w-full justify-center py-1">Current plan</Badge>
+              ) : (
                 <Button variant="outline" className="w-full" onClick={() => handleUpgrade('enterprise')} loading={loading}>
                   <Zap className="h-4 w-4" />
                   Contact sales

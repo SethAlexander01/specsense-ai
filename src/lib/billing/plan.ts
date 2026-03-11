@@ -14,7 +14,9 @@ export const FREE_DOC_LIMIT = 3   // uploads per calendar month
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-export type Plan = 'free' | 'pro'
+export type Plan = 'free' | 'starter' | 'professional' | 'enterprise'
+
+const PAID_PLANS: Plan[] = ['starter', 'professional', 'enterprise']
 
 interface PlanInfo {
   plan: Plan
@@ -48,14 +50,14 @@ export async function getUserPlan(
   }
 }
 
-/** Returns true when the user is on the Pro plan. */
+/** Returns true when the user is on any paid plan. */
 export async function isPro(
   userId: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: SupabaseClient<any>,
 ): Promise<boolean> {
   const { plan } = await getUserPlan(userId, supabase)
-  return plan === 'pro'
+  return PAID_PLANS.includes(plan)
 }
 
 /**
@@ -68,7 +70,7 @@ export async function checkDocLimit(
   supabase: SupabaseClient<any>,
 ): Promise<{ allowed: boolean; used: number; limit: number }> {
   const { plan } = await getUserPlan(userId, supabase)
-  if (plan === 'pro') return { allowed: true, used: 0, limit: Infinity }
+  if (PAID_PLANS.includes(plan)) return { allowed: true, used: 0, limit: Infinity }
 
   // Count documents uploaded this calendar month
   const startOfMonth = new Date()
