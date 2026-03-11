@@ -22,11 +22,11 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // Enforce free-plan document limit (3 per calendar month)
+    // Enforce per-plan document limit
     const { allowed, used, limit } = await checkDocLimit(user.id, supabase)
     if (!allowed) {
       return NextResponse.json(
-        { error: `Free plan limit of ${limit} documents/month reached (${used} used). Upgrade to Pro for unlimited uploads.` },
+        { error: `Plan limit of ${limit} documents/month reached (${used} used). Upgrade your plan for a higher limit.` },
         { status: 403 }
       )
     }

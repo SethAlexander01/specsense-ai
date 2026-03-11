@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatBytes, formatDate, FREE_PLAN_LIMIT } from '@/lib/utils'
+import { PLAN_DOC_LIMITS } from '@/lib/billing/plan'
 import { Upload, FileText, Clock, CheckCircle, AlertCircle, Loader } from 'lucide-react'
 
 function statusBadge(status: string) {
@@ -38,11 +39,13 @@ export default async function DashboardPage() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const profile = profileData as any
+  const plan: string = profile?.plan ?? 'free'
   const PAID_PLANS = ['starter', 'professional', 'enterprise']
-  const isPaid = PAID_PLANS.includes(profile?.plan ?? '')
-  const planLabel = profile?.plan ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) : 'Free'
+  const isPaid = PAID_PLANS.includes(plan)
+  const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1)
+  const planLimit = PLAN_DOC_LIMITS[plan] ?? FREE_PLAN_LIMIT
   const docsUsed = documents?.length ?? 0
-  const canUpload = isPaid || docsUsed < FREE_PLAN_LIMIT
+  const canUpload = docsUsed < planLimit || planLimit === Infinity
 
   return (
     <div className="p-8">
@@ -53,7 +56,9 @@ export default async function DashboardPage() {
             {profile?.full_name ? `Welcome, ${profile.full_name.split(' ')[0]}` : 'Dashboard'}
           </h1>
           <p className="text-slate-500 text-sm mt-1">
-            {isPaid ? `${planLabel} plan — unlimited documents` : `Free plan — ${docsUsed}/${FREE_PLAN_LIMIT} documents used`}
+            {planLimit === Infinity
+              ? `${planLabel} plan — unlimited documents`
+              : `${planLabel} plan — ${docsUsed}/${planLimit} documents used this month`}
           </p>
         </div>
         {canUpload ? (

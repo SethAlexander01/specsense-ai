@@ -11,6 +11,13 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 // ---------------------------------------------------------------------------
 export const FREE_DOC_LIMIT = 3   // uploads per calendar month
 
+export const PLAN_DOC_LIMITS: Record<string, number> = {
+  free:         3,
+  starter:      20,
+  professional: 200,
+  enterprise:   Infinity,
+}
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -61,8 +68,8 @@ export async function isPro(
 }
 
 /**
- * Check whether a Free-tier user has exceeded their monthly document limit.
- * Returns `{ allowed: true }` for Pro users unconditionally.
+ * Check whether a user has exceeded their monthly document limit.
+ * Enterprise users are always allowed. All others are checked against their plan limit.
  */
 export async function checkDocLimit(
   userId: string,
@@ -70,7 +77,9 @@ export async function checkDocLimit(
   supabase: SupabaseClient<any>,
 ): Promise<{ allowed: boolean; used: number; limit: number }> {
   const { plan } = await getUserPlan(userId, supabase)
-  if (PAID_PLANS.includes(plan)) return { allowed: true, used: 0, limit: Infinity }
+  const limit = PLAN_DOC_LIMITS[plan] ?? FREE_DOC_LIMIT
+
+  if (limit === Infinity) return { allowed: true, used: 0, limit: Infinity }
 
   // Count documents uploaded this calendar month
   const startOfMonth = new Date()
@@ -85,8 +94,8 @@ export async function checkDocLimit(
 
   const used = count ?? 0
   return {
-    allowed: used < FREE_DOC_LIMIT,
+    allowed: used < limit,
     used,
-    limit: FREE_DOC_LIMIT,
+    limit,
   }
 }
