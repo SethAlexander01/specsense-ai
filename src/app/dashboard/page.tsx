@@ -38,9 +38,11 @@ export default async function DashboardPage() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const profile = profileData as any
-  const isPro = profile?.plan === 'pro'
+  const PAID_PLANS = ['starter', 'professional', 'enterprise']
+  const isPaid = PAID_PLANS.includes(profile?.plan ?? '')
+  const planLabel = profile?.plan ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) : 'Free'
   const docsUsed = documents?.length ?? 0
-  const canUpload = isPro || docsUsed < FREE_PLAN_LIMIT
+  const canUpload = isPaid || docsUsed < FREE_PLAN_LIMIT
 
   return (
     <div className="p-8">
@@ -51,7 +53,7 @@ export default async function DashboardPage() {
             {profile?.full_name ? `Welcome, ${profile.full_name.split(' ')[0]}` : 'Dashboard'}
           </h1>
           <p className="text-slate-500 text-sm mt-1">
-            {isPro ? 'Pro plan — unlimited documents' : `Free plan — ${docsUsed}/${FREE_PLAN_LIMIT} documents used`}
+            {isPaid ? `${planLabel} plan — unlimited documents` : `Free plan — ${docsUsed}/${FREE_PLAN_LIMIT} documents used`}
           </p>
         </div>
         {canUpload ? (
@@ -74,7 +76,7 @@ export default async function DashboardPage() {
           { label: 'Total documents', value: docsUsed },
           { label: 'Ready', value: documents?.filter(d => d.status === 'ready').length ?? 0 },
           { label: 'Processing', value: documents?.filter(d => d.status === 'processing').length ?? 0 },
-          { label: 'Plan', value: isPro ? 'Pro' : 'Free' },
+          { label: 'Plan', value: planLabel },
         ].map((stat) => (
           <Card key={stat.label}>
             <CardContent className="py-4">

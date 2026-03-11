@@ -29,8 +29,8 @@ export function Navbar({ userEmail, plan }: NavbarProps) {
         <Link href="/dashboard" className="flex items-center gap-2 font-bold text-slate-900">
           <Cpu className="h-6 w-6 text-blue-600" />
           <span>SpecSense AI</span>
-          {plan === 'pro' && (
-            <span className="text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded font-medium">PRO</span>
+          {plan && plan !== 'free' && (
+            <span className="text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded font-medium uppercase">{plan}</span>
           )}
         </Link>
 
