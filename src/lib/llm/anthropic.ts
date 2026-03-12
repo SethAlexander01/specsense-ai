@@ -43,27 +43,9 @@ const SCHEMA_EXAMPLE = `{
 }`
 
 // ---------------------------------------------------------------------------
-// extractSpecs
+// Shared JSON parser for spec responses
 // ---------------------------------------------------------------------------
-export async function extractSpecs(text: string): Promise<ExtractedSpecs> {
-  const prompt = `Extract all engineering specifications from the document text below.
-
-Output ONLY a JSON object that strictly matches this schema (all keys required):
-${SCHEMA_EXAMPLE}
-
-Document text:
-${text.slice(0, 30_000)}`
-
-  const msg = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    system: EXTRACT_SYSTEM,
-    messages: [{ role: 'user', content: prompt }],
-  })
-
-  const raw = msg.content[0].type === 'text' ? msg.content[0].text.trim() : '{}'
-
-  // Extract JSON object robustly — find outermost { ... }
+function parseSpecResponse(raw: string): ExtractedSpecs {
   const start = raw.indexOf('{')
   const end = raw.lastIndexOf('}')
   if (start === -1 || end === -1 || end < start) {
@@ -83,6 +65,56 @@ ${text.slice(0, 30_000)}`
     throw new Error(`Schema validation failed: ${result.error.message}`)
   }
   return result.data
+}
+
+// ---------------------------------------------------------------------------
+// extractSpecsFromPDF — for scanned/image-based PDFs using Claude vision
+// ---------------------------------------------------------------------------
+export async function extractSpecsFromPDF(pdfBuffer: Buffer): Promise<ExtractedSpecs> {
+  const base64 = pdfBuffer.toString('base64')
+
+  const msg = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2048,
+    system: EXTRACT_SYSTEM,
+    messages: [{
+      role: 'user',
+      content: [
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } } as any,
+        {
+          type: 'text',
+          text: `Extract all engineering specifications from this PDF document.\n\nOutput ONLY a JSON object that strictly matches this schema (all keys required):\n${SCHEMA_EXAMPLE}`,
+        },
+      ],
+    }],
+  })
+
+  const raw = msg.content[0].type === 'text' ? msg.content[0].text.trim() : '{}'
+  return parseSpecResponse(raw)
+}
+
+// ---------------------------------------------------------------------------
+// extractSpecs
+// ---------------------------------------------------------------------------
+export async function extractSpecs(text: string): Promise<ExtractedSpecs> {
+  const prompt = `Extract all engineering specifications from the document text below.
+
+Output ONLY a JSON object that strictly matches this schema (all keys required):
+${SCHEMA_EXAMPLE}
+
+Document text:
+${text.slice(0, 30_000)}`
+
+  const msg = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2048,
+    system: EXTRACT_SYSTEM,
+    messages: [{ role: 'user', content: prompt }],
+  })
+
+  const raw = msg.content[0].type === 'text' ? msg.content[0].text.trim() : '{}'
+  return parseSpecResponse(raw)
 }
 
 // ---------------------------------------------------------------------------
