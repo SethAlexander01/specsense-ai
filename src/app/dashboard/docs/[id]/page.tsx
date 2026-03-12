@@ -23,7 +23,8 @@ export default async function DocPage({ params }: { params: Promise<{ id: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const doc = docData as any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isPro = (profileData as any)?.plan === 'pro'
+  const PAID_PLANS = ['starter', 'professional', 'enterprise']
+  const isPro = PAID_PLANS.includes((profileData as any)?.plan ?? '')
 
   return (
     <DocumentView

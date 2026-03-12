@@ -62,11 +62,27 @@ ${text.slice(0, 30_000)}`
   })
 
   const raw = msg.content[0].type === 'text' ? msg.content[0].text.trim() : '{}'
-  // Strip accidental code fences
-  const jsonStr = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
-  const parsed = JSON.parse(jsonStr)
-  return ExtractedSpecsSchema.parse(parsed)
+  // Extract JSON object robustly — find outermost { ... }
+  const start = raw.indexOf('{')
+  const end = raw.lastIndexOf('}')
+  if (start === -1 || end === -1 || end < start) {
+    throw new Error(`No JSON object found in model response. Raw: ${raw.slice(0, 200)}`)
+  }
+  const jsonStr = raw.slice(start, end + 1)
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(jsonStr)
+  } catch (e) {
+    throw new Error(`JSON.parse failed: ${(e as Error).message}. Snippet: ${jsonStr.slice(0, 200)}`)
+  }
+
+  const result = ExtractedSpecsSchema.safeParse(parsed)
+  if (!result.success) {
+    throw new Error(`Schema validation failed: ${result.error.message}`)
+  }
+  return result.data
 }
 
 // ---------------------------------------------------------------------------
