@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { answerQuestion } from '@/lib/llm/anthropic'
-import { isPro } from '@/lib/billing/plan'
+import { getUserPlan } from '@/lib/billing/plan'
 import type Anthropic from '@anthropic-ai/sdk'
 
 // ---------------------------------------------------------------------------
@@ -102,11 +102,11 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // Plan gate — chat is Pro only
-    const userIsPro = await isPro(user.id, supabase)
-    if (!userIsPro) {
+    // Plan gate — chat requires Professional or Enterprise
+    const { plan } = await getUserPlan(user.id, supabase)
+    if (!['professional', 'enterprise'].includes(plan)) {
       return NextResponse.json(
-        { error: 'Chat requires a Pro plan. Upgrade at /billing.' },
+        { error: 'Chat requires a Professional or Enterprise plan. Upgrade at /billing.' },
         { status: 403 }
       )
     }

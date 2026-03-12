@@ -23,14 +23,16 @@ export default async function DocPage({ params }: { params: Promise<{ id: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const doc = docData as any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const PAID_PLANS = ['starter', 'professional', 'enterprise']
-  const isPro = PAID_PLANS.includes((profileData as any)?.plan ?? '')
+  const plan = (profileData as any)?.plan ?? 'free'
+  const isPro = ['starter', 'professional', 'enterprise'].includes(plan)
+  const canChat = ['professional', 'enterprise'].includes(plan)
 
   return (
     <DocumentView
       doc={doc}
       initialMessages={chatHistory ?? []}
       isPro={isPro}
+      canChat={canChat}
       chunkCount={chunkCount ?? 0}
     />
   )

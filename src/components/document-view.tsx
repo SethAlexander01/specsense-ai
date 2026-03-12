@@ -20,12 +20,13 @@ interface Props {
   doc: Document
   initialMessages: ChatMessage[]
   isPro: boolean
+  canChat: boolean
   chunkCount: number
 }
 
 type Tab = 'specs' | 'text' | 'chat'
 
-export function DocumentView({ doc, initialMessages, isPro, chunkCount }: Props) {
+export function DocumentView({ doc, initialMessages, isPro, canChat, chunkCount }: Props) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<Tab>('specs')
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
@@ -261,7 +262,7 @@ export function DocumentView({ doc, initialMessages, isPro, chunkCount }: Props)
             {tab === 'chat' && (
               <span className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />Chat
-                {!isPro && <Lock className="h-3 w-3 text-slate-400" />}
+                {!canChat && <Lock className="h-3 w-3 text-slate-400" />}
               </span>
             )}
           </button>
@@ -362,12 +363,12 @@ export function DocumentView({ doc, initialMessages, isPro, chunkCount }: Props)
       {/* Chat Tab */}
       {activeTab === 'chat' && (
         <div>
-          {!isPro ? (
+          {!canChat ? (
             <div className="text-center py-16">
               <Lock className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-semibold text-slate-900 mb-2">Chat is a Pro feature</h3>
-              <p className="text-slate-500 text-sm mb-6">Upgrade to unlock AI chat with your engineering documents.</p>
-              <Link href="/billing"><Button><Zap className="h-4 w-4" />View plans — from $79/mo</Button></Link>
+              <h3 className="font-semibold text-slate-900 mb-2">Chat requires Professional or Enterprise</h3>
+              <p className="text-slate-500 text-sm mb-6">Upgrade to Professional or Enterprise to unlock AI chat with your engineering documents.</p>
+              <Link href="/billing"><Button><Zap className="h-4 w-4" />View plans</Button></Link>
             </div>
           ) : (
             <ChatPanel
