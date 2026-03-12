@@ -68,10 +68,24 @@ function parseSpecResponse(raw: string): ExtractedSpecs {
 }
 
 // ---------------------------------------------------------------------------
-// extractSpecsFromPDF — for scanned/image-based PDFs using Claude vision
+// extractSpecsFromFile — vision extraction for scanned PDFs and images
 // ---------------------------------------------------------------------------
-export async function extractSpecsFromPDF(pdfBuffer: Buffer): Promise<ExtractedSpecs> {
-  const base64 = pdfBuffer.toString('base64')
+export async function extractSpecsFromFile(
+  fileBuffer: Buffer,
+  mimeType: string,
+): Promise<ExtractedSpecs> {
+  const base64 = fileBuffer.toString('base64')
+  const prompt = `Extract all engineering specifications from this document.\n\nOutput ONLY a JSON object that strictly matches this schema (all keys required):\n${SCHEMA_EXAMPLE}`
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let fileBlock: any
+  if (mimeType === 'application/pdf') {
+    fileBlock = { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } }
+  } else {
+    // image/png, image/jpeg, image/webp, image/gif
+    const imageMediaType = mimeType.startsWith('image/') ? mimeType : 'image/png'
+    fileBlock = { type: 'image', source: { type: 'base64', media_type: imageMediaType, data: base64 } }
+  }
 
   const msg = await client.messages.create({
     model: 'claude-sonnet-4-6',
@@ -79,14 +93,7 @@ export async function extractSpecsFromPDF(pdfBuffer: Buffer): Promise<ExtractedS
     system: EXTRACT_SYSTEM,
     messages: [{
       role: 'user',
-      content: [
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } } as any,
-        {
-          type: 'text',
-          text: `Extract all engineering specifications from this PDF document.\n\nOutput ONLY a JSON object that strictly matches this schema (all keys required):\n${SCHEMA_EXAMPLE}`,
-        },
-      ],
+      content: [fileBlock, { type: 'text', text: prompt }],
     }],
   })
 

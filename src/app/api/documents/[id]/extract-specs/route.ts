@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { extractSpecs, extractSpecsFromPDF } from '@/lib/llm/anthropic'
+import { extractSpecs, extractSpecsFromFile } from '@/lib/llm/anthropic'
 
-const PDF_EXTRACTION_FAILED = '[PDF text extraction failed'
+const TEXT_EXTRACTION_FAILED_PREFIXES = [
+  '[PDF text extraction failed',
+  '[Image file',
+]
 
 export async function POST(
   _request: NextRequest,
@@ -25,7 +28,8 @@ export async function POST(
 
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 })
 
-    const textFailed = !doc.extracted_text || doc.extracted_text.startsWith(PDF_EXTRACTION_FAILED)
+    const textFailed = !doc.extracted_text ||
+      TEXT_EXTRACTION_FAILED_PREFIXES.some((p: string) => doc.extracted_text.startsWith(p))
 
     // Mark processing so the UI shows the spinner
     await supabase.from('documents').update({ status: 'processing' }).eq('id', documentId)
@@ -39,7 +43,7 @@ export async function POST(
           .download(doc.storage_path)
         if (dlError || !fileData) throw new Error('Failed to download file for vision extraction')
         const buffer = Buffer.from(await fileData.arrayBuffer())
-        specs = await extractSpecsFromPDF(buffer)
+        specs = await extractSpecsFromFile(buffer, doc.mime_type ?? 'application/pdf')
       } else {
         // Text-based PDF — use extracted text
         let text: string = doc.extracted_text ?? ''
