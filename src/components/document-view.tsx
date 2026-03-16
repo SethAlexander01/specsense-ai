@@ -612,13 +612,23 @@ function SpecsPanel({ specs, docFilename }: { specs: ExtractedSpecs; docFilename
     confidence >= 50 ? 'text-amber-700 bg-amber-50 border-amber-200' :
                       'text-red-700 bg-red-50 border-red-200'
 
-  const stringFields: { key: keyof ExtractedSpecs; label: string }[] = [
+  const identificationFields: { key: keyof ExtractedSpecs; label: string }[] = [
+    { key: 'part_number',    label: 'Part Number' },
+    { key: 'drawing_number', label: 'Drawing No.' },
+    { key: 'revision',       label: 'Revision' },
+    { key: 'title',          label: 'Title' },
+  ]
+
+  const propertyFields: { key: keyof ExtractedSpecs; label: string }[] = [
     { key: 'material',          label: 'Material' },
     { key: 'heat_treatment',    label: 'Heat Treatment' },
     { key: 'coating_finish',    label: 'Coating / Finish' },
     { key: 'surface_finish',    label: 'Surface Finish' },
     { key: 'tolerance_general', label: 'General Tolerance' },
+    { key: 'weight',            label: 'Weight' },
   ]
+
+  const hasIdentification = identificationFields.some(f => specs[f.key])
 
   return (
     <div className="space-y-4">
@@ -636,12 +646,33 @@ function SpecsPanel({ specs, docFilename }: { specs: ExtractedSpecs; docFilename
         </Button>
       </div>
 
-      {/* String fields */}
+      {/* Identification */}
+      {hasIdentification && (
+        <Card>
+          <CardHeader><h2 className="font-semibold text-slate-900">Identification</h2></CardHeader>
+          <CardContent>
+            <dl className="divide-y divide-slate-50">
+              {identificationFields.map(({ key, label }) => {
+                const val = specs[key] as string | null
+                if (!val) return null
+                return (
+                  <div key={key} className="flex gap-4 py-2.5 first:pt-0 last:pb-0">
+                    <dt className="w-36 shrink-0 text-xs font-medium text-slate-500 uppercase tracking-wide pt-0.5">{label}</dt>
+                    <dd className="text-sm text-slate-900 flex-1">{val}</dd>
+                  </div>
+                )
+              })}
+            </dl>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Properties */}
       <Card>
         <CardHeader><h2 className="font-semibold text-slate-900">Properties</h2></CardHeader>
         <CardContent>
           <dl className="divide-y divide-slate-50">
-            {stringFields.map(({ key, label }) => {
+            {propertyFields.map(({ key, label }) => {
               const val = specs[key] as string | null
               return (
                 <div key={key} className="flex gap-4 py-2.5 first:pt-0 last:pb-0">
@@ -684,6 +715,48 @@ function SpecsPanel({ specs, docFilename }: { specs: ExtractedSpecs; docFilename
               <li key={i} className="flex items-start gap-2 text-sm text-slate-800">
                 <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-400 shrink-0" />
                 <span className="font-mono">{t}</span>
+              </li>
+            ))}
+          </ul>
+        </CollapsibleCard>
+      )}
+
+      {/* Process requirements */}
+      {specs.process_requirements.length > 0 && (
+        <CollapsibleCard title="Process Requirements">
+          <ul className="space-y-1.5">
+            {specs.process_requirements.map((p, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" />
+                {p}
+              </li>
+            ))}
+          </ul>
+        </CollapsibleCard>
+      )}
+
+      {/* Test requirements */}
+      {specs.test_requirements.length > 0 && (
+        <CollapsibleCard title="Test & Inspection Requirements">
+          <ul className="space-y-1.5">
+            {specs.test_requirements.map((t, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
+                {t}
+              </li>
+            ))}
+          </ul>
+        </CollapsibleCard>
+      )}
+
+      {/* Operating conditions */}
+      {specs.operating_conditions.length > 0 && (
+        <CollapsibleCard title="Operating Conditions">
+          <ul className="space-y-1.5">
+            {specs.operating_conditions.map((o, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-purple-400 shrink-0" />
+                {o}
               </li>
             ))}
           </ul>

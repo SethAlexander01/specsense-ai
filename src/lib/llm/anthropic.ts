@@ -6,40 +6,59 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 // ---------------------------------------------------------------------------
 // Extraction system prompt — tuned for engineering PDFs
 // ---------------------------------------------------------------------------
-const EXTRACT_SYSTEM = `You are an expert engineering document analyst specialising in manufacturing specifications, technical drawings, GD&T, and international engineering standards.
+const EXTRACT_SYSTEM = `You are an expert engineering document analyst. You can read any type of engineering or manufacturing document including:
+- Technical / CAD drawings (mechanical, structural, electrical, PCB)
+- Material data sheets and certifications
+- Product specification sheets
+- Welding procedure specifications (WPS)
+- Assembly drawings and BOMs
+- Quality / inspection specifications
+- Process specifications
 
-Your task: extract structured specifications from engineering documents and output ONLY a single valid JSON object — no markdown, no code fences, no prose, no explanation.
+Your task: extract ALL structured specifications from the document and output ONLY a single valid JSON object — no markdown, no code fences, no prose, no explanation.
 
 Extraction rules:
-- Copy values EXACTLY as they appear; do not paraphrase or abbreviate.
-- Use null for any field that is absent or cannot be determined from the document.
-- Use [] for array fields that have no data.
-- material: full material designation including alloy and temper, e.g. "AISI 316L Stainless Steel" or "Aluminium 6061-T6 per AMS 2770".
-- coating_finish: coating, plating, or anodising specification including thickness if stated, e.g. "Hard anodise Type III, 25 μm min per MIL-A-8625".
-- surface_finish: surface roughness or texture requirement, e.g. "Ra 1.6 μm all over unless noted" or "125 μin RMS".
-- tolerance_general: the default/general tolerance note, e.g. "±0.1 unless otherwise specified" or "ISO 2768-m".
-- heat_treatment: full heat treatment or hardness requirement, e.g. "Quench & temper, 28–32 HRC" or "Normalise per ASTM A6".
-- threads: list every thread call-out as a single string, e.g. "M8×1.25 – 6H", "1/4-20 UNC-2B THRU". Include class of fit if shown.
-- standards: list every referenced standard, code, or specification number, e.g. "ISO 2768-m", "ASTM A276", "DIN 7168-m".
-- critical_dimensions: named key dimensions with full value including units and tolerance, e.g. {"name":"Bore Ø","value":"25.000 +0.000/−0.013 mm"}.
-- notes: general notes or revision notes from the drawing/document, each as a separate string.
-- confidence: a number 0.0–1.0 representing your confidence in the extraction quality:
-    1.0 = clear digital text with all fields present
-    0.7 = most fields found, some ambiguity
-    0.4 = sparse text, likely scanned or mostly graphical
-    0.1 = almost no useful text extracted`
+- Copy values EXACTLY as they appear in the document; do not paraphrase or abbreviate.
+- Use null for any field that is absent or cannot be determined.
+- Use [] for array fields with no data.
+- part_number: the part number, item number, or product code shown in the title block or header.
+- drawing_number: the drawing or document number (may differ from part number).
+- revision: the revision letter or number, e.g. "Rev B", "C", "03".
+- title: the document or part title/description from the title block.
+- material: full material designation including alloy, grade, and temper, e.g. "AISI 316L Stainless Steel", "Aluminium 6061-T6 per AMS 2770", "A36 Structural Steel".
+- heat_treatment: full heat treatment or hardness requirement, e.g. "Quench & temper, 28–32 HRC".
+- coating_finish: coating, plating, or anodising specification including thickness if stated.
+- surface_finish: surface roughness or texture requirement, e.g. "Ra 1.6 μm all over unless noted".
+- tolerance_general: the default/general tolerance block, e.g. "±0.1 unless otherwise specified" or "ISO 2768-m".
+- weight: mass or weight of the part/assembly including units, e.g. "2.4 kg", "5.3 lbs".
+- threads: every thread call-out as a single string including class of fit, e.g. "M8×1.25 – 6H", "1/4-20 UNC-2B THRU".
+- critical_dimensions: every named key dimension with full value, units, and tolerance, e.g. {"name":"Overall Length","value":"150.0 ±0.2 mm"}.
+- process_requirements: manufacturing or assembly process requirements, e.g. "All welds to AWS D1.1", "Passivate per ASTM A967", "Degrease before coating".
+- test_requirements: required tests, inspections, or certifications, e.g. "100% visual inspection", "Pressure test at 1.5× working pressure", "Cert of conformance required".
+- operating_conditions: operating environment or service conditions, e.g. "−40°C to +85°C", "Max working pressure 200 bar", "IP67 rated".
+- standards: every referenced standard, code, or specification number, e.g. "ISO 2768-m", "ASTM A276", "AWS D1.1".
+- notes: every general note, revision note, or special instruction from the document, each as a separate string.
+- confidence: 0.0–1.0 representing extraction quality (1.0 = clear digital doc with all fields; 0.7 = most fields found; 0.4 = scanned/graphical; 0.1 = almost no useful content).`
 
 const SCHEMA_EXAMPLE = `{
-  "material":           "string or null",
-  "coating_finish":     "string or null",
-  "surface_finish":     "string or null",
-  "tolerance_general":  "string or null",
-  "heat_treatment":     "string or null",
-  "threads":            ["thread call-out string", ...],
-  "standards":          ["standard code string", ...],
-  "critical_dimensions":[{"name":"dimension name","value":"value with units and tolerance"}, ...],
-  "notes":              ["note string", ...],
-  "confidence":         0.0
+  "part_number":         "string or null",
+  "drawing_number":      "string or null",
+  "revision":            "string or null",
+  "title":               "string or null",
+  "material":            "string or null",
+  "heat_treatment":      "string or null",
+  "coating_finish":      "string or null",
+  "surface_finish":      "string or null",
+  "tolerance_general":   "string or null",
+  "weight":              "string or null",
+  "threads":             ["thread call-out string", ...],
+  "critical_dimensions": [{"name":"dimension name","value":"value with units and tolerance"}, ...],
+  "process_requirements":["process requirement string", ...],
+  "test_requirements":   ["test requirement string", ...],
+  "operating_conditions":["operating condition string", ...],
+  "standards":           ["standard code string", ...],
+  "notes":               ["note string", ...],
+  "confidence":          0.0
 }`
 
 // ---------------------------------------------------------------------------
