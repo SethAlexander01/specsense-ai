@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { extractSpecs, extractSpecsFromFile } from '@/lib/llm/anthropic'
 
+export const maxDuration = 60 // seconds — vision extraction can take 15-30s
+
 const TEXT_EXTRACTION_FAILED_PREFIXES = [
   '[PDF text extraction failed',
   '[Image file',

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { extractTextFromPDF, chunkText } from '@/lib/pdf-extract'
 
+export const maxDuration = 60
+
 export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
