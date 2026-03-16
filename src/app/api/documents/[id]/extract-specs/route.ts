@@ -7,6 +7,7 @@ const TEXT_EXTRACTION_FAILED_PREFIXES = [
   '[Image file',
 ]
 
+
 export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -28,16 +29,18 @@ export async function POST(
 
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 })
 
-    const textFailed = !doc.extracted_text ||
-      TEXT_EXTRACTION_FAILED_PREFIXES.some((p: string) => doc.extracted_text.startsWith(p))
+    // For spec extraction, always prefer vision (raw file) when available —
+    // pdf-parse often returns whitespace/garbage on scanned PDFs without throwing,
+    // causing the LLM to get junk text instead of the actual drawing.
+    const useVision = !!doc.storage_path
 
     // Mark processing so the UI shows the spinner
     await supabase.from('documents').update({ status: 'processing' }).eq('id', documentId)
 
     let specs
     try {
-      if (textFailed && doc.storage_path) {
-        // Scanned/image PDF — send raw file to Claude vision
+      if (useVision) {
+        // Send raw file to Claude vision — handles scanned PDFs, images, and digital PDFs
         const { data: fileData, error: dlError } = await supabase.storage
           .from('documents')
           .download(doc.storage_path)
@@ -45,9 +48,10 @@ export async function POST(
         const buffer = Buffer.from(await fileData.arrayBuffer())
         specs = await extractSpecsFromFile(buffer, doc.mime_type ?? 'application/pdf')
       } else {
-        // Text-based PDF — use extracted text
-        let text: string = doc.extracted_text ?? ''
-        if (!text) {
+        // No file in storage — fall back to extracted text (e.g. re-processed doc)
+        let text: string = doc.extracted_text?.trim() ?? ''
+        const textIsPlaceholder = TEXT_EXTRACTION_FAILED_PREFIXES.some((p: string) => text.startsWith(p))
+        if (!text || textIsPlaceholder) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { data: chunks } = await supabase
             .from('doc_chunks')
