@@ -36,8 +36,8 @@ export async function POST(
     // causing the LLM to get junk text instead of the actual drawing.
     const useVision = !!doc.storage_path
 
-    // Mark processing so the UI shows the spinner
-    await supabase.from('documents').update({ status: 'processing' }).eq('id', documentId)
+    // Clear stale specs and mark processing so the UI shows a fresh state
+    await supabase.from('documents').update({ status: 'processing', extracted_specs: null }).eq('id', documentId)
 
     let specs
     try {

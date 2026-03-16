@@ -155,6 +155,8 @@ export function DocumentView({ doc, initialMessages, isPro, canChat, chunkCount 
   const isProcessing = doc.status === 'processing'
   const isUploaded = doc.status === 'uploaded'
   const hasText = !!doc.extracted_text
+  // Vision extraction works directly from storage — don't require text extraction first
+  const canExtract = !!doc.storage_path || hasText
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-6">
@@ -193,8 +195,8 @@ export function DocumentView({ doc, initialMessages, isPro, canChat, chunkCount 
             variant="outline" size="sm"
             onClick={handleExtractSpecs}
             loading={extractLoading}
-            disabled={isProcessing || !hasText}
-            title={!hasText ? 'Process the document first' : undefined}
+            disabled={isProcessing || !canExtract}
+            title={!canExtract ? 'Upload a document first' : undefined}
           >
             <Sparkles className="h-4 w-4" />
             Extract specs
@@ -287,30 +289,20 @@ export function DocumentView({ doc, initialMessages, isPro, canChat, chunkCount 
 
           {specs ? (
             <SpecsPanel specs={specs} docFilename={doc.filename} />
-          ) : isUploaded || !hasText ? (
+          ) : canExtract ? (
             <div className="text-center py-16 text-slate-400">
               <Sparkles className="h-10 w-10 mx-auto mb-3" />
               <p className="mb-1 font-medium text-slate-600">No specs extracted yet</p>
-              <p className="text-sm mb-6">
-                {!hasText ? 'Process the document first, then run AI extraction.' : 'Click "Extract specs" to run AI analysis.'}
-              </p>
-              {!hasText ? (
-                <Button onClick={handleProcess} loading={processLoading}>
-                  <Play className="h-4 w-4" />Process document
-                </Button>
-              ) : (
-                <Button onClick={handleExtractSpecs} loading={extractLoading}>
-                  <Sparkles className="h-4 w-4" />Extract specs
-                </Button>
-              )}
+              <p className="text-sm mb-6">Click &quot;Extract specs&quot; to run AI analysis on your document.</p>
+              <Button onClick={handleExtractSpecs} loading={extractLoading}>
+                <Sparkles className="h-4 w-4" />Extract specs
+              </Button>
             </div>
           ) : (
             <div className="text-center py-16 text-slate-400">
               <Sparkles className="h-10 w-10 mx-auto mb-3" />
-              <p className="text-sm mb-6">Run AI extraction to populate this panel.</p>
-              <Button onClick={handleExtractSpecs} loading={extractLoading}>
-                <Sparkles className="h-4 w-4" />Extract specs
-              </Button>
+              <p className="mb-1 font-medium text-slate-600">No specs extracted yet</p>
+              <p className="text-sm mb-6">Upload a document to get started.</p>
             </div>
           )}
         </div>
