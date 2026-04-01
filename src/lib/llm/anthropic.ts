@@ -108,7 +108,7 @@ export async function extractSpecsFromFile(
 
   const msg = await client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
+    max_tokens: 8192,
     system: EXTRACT_SYSTEM,
     messages: [{
       role: 'user',
@@ -134,7 +134,7 @@ ${text.slice(0, 30_000)}`
 
   const msg = await client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
+    max_tokens: 8192,
     system: EXTRACT_SYSTEM,
     messages: [{ role: 'user', content: prompt }],
   })
