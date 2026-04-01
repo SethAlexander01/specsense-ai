@@ -86,6 +86,24 @@ function parseSpecResponse(raw: string): ExtractedSpecs {
   return result.data
 }
 
+// Detect actual file type from magic bytes — don't trust stored mime_type
+function detectMediaType(buf: Buffer): { isPdf: boolean; imageMediaType: string } {
+  if (buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 && buf[3] === 0x46) {
+    return { isPdf: true, imageMediaType: '' } // %PDF
+  }
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) {
+    return { isPdf: false, imageMediaType: 'image/png' } // PNG
+  }
+  if (buf[0] === 0xFF && buf[1] === 0xD8) {
+    return { isPdf: false, imageMediaType: 'image/jpeg' } // JPEG
+  }
+  if (buf.subarray(0, 4).toString() === 'RIFF' && buf.subarray(8, 12).toString() === 'WEBP') {
+    return { isPdf: false, imageMediaType: 'image/webp' }
+  }
+  // Fall back to stored mime_type hint
+  return { isPdf: false, imageMediaType: 'image/png' }
+}
+
 // ---------------------------------------------------------------------------
 // extractSpecsFromFile — vision extraction for scanned PDFs and images
 // ---------------------------------------------------------------------------
@@ -96,14 +114,16 @@ export async function extractSpecsFromFile(
   const base64 = fileBuffer.toString('base64')
   const prompt = `Extract all engineering specifications from this document.\n\nOutput ONLY a JSON object that strictly matches this schema (all keys required):\n${SCHEMA_EXAMPLE}`
 
+  const { isPdf, imageMediaType } = detectMediaType(fileBuffer)
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let fileBlock: any
-  if (mimeType === 'application/pdf') {
+  if (isPdf) {
     fileBlock = { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } }
   } else {
-    // image/png, image/jpeg, image/webp, image/gif
-    const imageMediaType = mimeType.startsWith('image/') ? mimeType : 'image/png'
-    fileBlock = { type: 'image', source: { type: 'base64', media_type: imageMediaType, data: base64 } }
+    // Use detected image type, fall back to stored mime_type if detection missed
+    const resolvedType = imageMediaType || (mimeType.startsWith('image/') ? mimeType : 'image/png')
+    fileBlock = { type: 'image', source: { type: 'base64', media_type: resolvedType, data: base64 } }
   }
 
   const msg = await client.messages.create({
