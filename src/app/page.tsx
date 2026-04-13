@@ -165,8 +165,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-700 py-8 text-center text-slate-500 text-sm">
-        © {new Date().getFullYear()} SpecSense AI. Built with Claude AI.
+      <footer className="border-t border-slate-700 py-8 text-slate-500 text-sm">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span>&copy; {new Date().getFullYear()} SpecSense AI. Built with Claude AI.</span>
+          <div className="flex items-center gap-5">
+            <Link href="/terms" className="hover:text-slate-300 underline-offset-2 hover:underline">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-slate-300 underline-offset-2 hover:underline">Privacy Policy</Link>
+          </div>
+        </div>
       </footer>
     </div>
   )

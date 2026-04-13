@@ -82,6 +82,11 @@ export function Sidebar({ userEmail, plan }: SidebarProps) {
           <LogOut className="h-4 w-4 shrink-0" />
           Sign out
         </button>
+        <div className="flex items-center gap-3 px-3 mt-3 pt-3 border-t border-slate-800">
+          <Link href="/terms" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Terms</Link>
+          <span className="text-slate-700 text-xs">·</span>
+          <Link href="/privacy" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Privacy</Link>
+        </div>
       </div>
     </aside>
   )

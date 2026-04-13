@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { CheckCircle, Zap, Shield, FileText, MessageSquare, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Suspense } from 'react'
+import { LegalFooter } from '@/components/ui/legal-footer'
 
 function BillingContent() {
   const searchParams = useSearchParams()
@@ -220,6 +221,7 @@ function BillingContent() {
           </Card>
         </div>
       </main>
+      <LegalFooter />
     </div>
   )
 }
