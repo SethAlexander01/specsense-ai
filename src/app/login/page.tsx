@@ -75,6 +75,13 @@ export default function LoginPage() {
             </Button>
           </form>
         </div>
+
+        <p className="text-center text-xs text-slate-400 mt-6">
+          By signing in you agree to our{' '}
+          <Link href="/terms" className="hover:text-slate-600 underline">Terms of Service</Link>
+          {' '}and{' '}
+          <Link href="/privacy" className="hover:text-slate-600 underline">Privacy Policy</Link>
+        </p>
       </div>
     </div>
   )
