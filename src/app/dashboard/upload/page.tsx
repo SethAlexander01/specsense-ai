@@ -197,9 +197,8 @@ export default function UploadPage() {
       <div className="mt-4 flex items-start gap-2 text-xs text-slate-400">
         <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
         <span>
-          Free plan: up to 3 documents.{' '}
-          <a href="/billing" className="underline text-slate-500 hover:text-slate-700">Upgrade to Pro</a>{' '}
-          for unlimited uploads.
+          Monthly upload limits apply based on your plan (Free: 3, Starter: 20, Professional: 200, Enterprise: unlimited).{' '}
+          <a href="/billing" className="underline text-slate-500 hover:text-slate-700">View plans</a>.
         </span>
       </div>
     </div>

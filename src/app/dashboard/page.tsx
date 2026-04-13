@@ -44,8 +44,14 @@ export default async function DashboardPage() {
   const isPaid = PAID_PLANS.includes(plan)
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1)
   const planLimit = PLAN_DOC_LIMITS[plan] ?? FREE_PLAN_LIMIT
-  const docsUsed = documents?.length ?? 0
-  const canUpload = docsUsed < planLimit || planLimit === Infinity
+
+  // Monthly count — must match checkDocLimit in plan.ts (UTC month boundary)
+  const now = new Date()
+  const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
+  const docsThisMonth = documents?.filter(d => new Date(d.created_at) >= startOfMonth).length ?? 0
+  const docsTotal = documents?.length ?? 0
+
+  const canUpload = planLimit === Infinity || docsThisMonth < planLimit
 
   return (
     <div className="p-8">
@@ -58,7 +64,7 @@ export default async function DashboardPage() {
           <p className="text-slate-500 text-sm mt-1">
             {planLimit === Infinity
               ? `${planLabel} plan — unlimited documents`
-              : `${planLabel} plan — ${docsUsed}/${planLimit} documents used this month`}
+              : `${planLabel} plan — ${docsThisMonth}/${planLimit} uploads used this month`}
           </p>
         </div>
         {canUpload ? (
@@ -78,9 +84,9 @@ export default async function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total documents', value: docsUsed },
+          { label: 'Total documents', value: docsTotal },
+          { label: planLimit === Infinity ? 'This month' : `This month (limit ${planLimit})`, value: planLimit === Infinity ? docsThisMonth : `${docsThisMonth}/${planLimit}` },
           { label: 'Ready', value: documents?.filter(d => d.status === 'ready').length ?? 0 },
-          { label: 'Processing', value: documents?.filter(d => d.status === 'processing').length ?? 0 },
           { label: 'Plan', value: planLabel },
         ].map((stat) => (
           <Card key={stat.label}>

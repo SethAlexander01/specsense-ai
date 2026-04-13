@@ -81,10 +81,9 @@ export async function checkDocLimit(
 
   if (limit === Infinity) return { allowed: true, used: 0, limit: Infinity }
 
-  // Count documents uploaded this calendar month
-  const startOfMonth = new Date()
-  startOfMonth.setDate(1)
-  startOfMonth.setHours(0, 0, 0, 0)
+  // Count documents uploaded this calendar month (UTC so server timezone doesn't matter)
+  const now = new Date()
+  const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
 
   const { count } = await supabase
     .from('documents')
