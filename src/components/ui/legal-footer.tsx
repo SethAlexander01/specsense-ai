@@ -8,7 +8,7 @@ export function LegalFooter({ dark = false }: { dark?: boolean }) {
 
   return (
     <footer className={`border-t ${border} ${bg} mt-auto`}>
-      <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs ${text}`}>
+      <div className={`max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs ${text}`}>
         <span className={text}>&copy; {new Date().getFullYear()} SpecSense AI. All rights reserved.</span>
         <div className="flex items-center gap-5">
           <Link href="/terms" className={`${text} ${hover} underline-offset-2 hover:underline`}>
