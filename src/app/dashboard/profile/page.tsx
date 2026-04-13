@@ -49,19 +49,21 @@ export default function ProfilePage() {
     load()
   }, [supabase])
 
+  async function patchProfile(body: Record<string, string>) {
+    const res = await fetch('/api/profile', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error ?? 'Update failed')
+  }
+
   async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({ full_name: fullName.trim(), updated_at: new Date().toISOString() })
-        .eq('id', user.id)
-
-      if (error) throw error
+      await patchProfile({ full_name: fullName.trim() })
       toast.success('Profile updated')
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to update profile')
@@ -72,19 +74,11 @@ export default function ProfilePage() {
 
   async function handleUpdateEmail(e: React.FormEvent) {
     e.preventDefault()
-    if (newEmail === email) return toast.error('That is already your current email')
     setSavingEmail(true)
     try {
-      const { error } = await supabase.auth.updateUser({ email: newEmail })
-      if (error) throw error
-
-      // Also update profiles table
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        await supabase.from('profiles').update({ email: newEmail, updated_at: new Date().toISOString() }).eq('id', user.id)
-      }
-
-      toast.success('Confirmation email sent — check your inbox to confirm the change')
+      await patchProfile({ email: newEmail })
+      setEmail(newEmail)
+      toast.success('Email updated successfully')
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to update email')
     } finally {
@@ -98,8 +92,7 @@ export default function ProfilePage() {
     if (newPassword.length < 8) return toast.error('Password must be at least 8 characters')
     setSavingPassword(true)
     try {
-      const { error } = await supabase.auth.updateUser({ password: newPassword })
-      if (error) throw error
+      await patchProfile({ password: newPassword })
       toast.success('Password updated')
       setCurrentPassword('')
       setNewPassword('')
