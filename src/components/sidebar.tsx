@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
-  Cpu, LayoutDashboard, Upload, CreditCard, LogOut, FileText,
+  Cpu, LayoutDashboard, Upload, CreditCard, LogOut, FileText, UserCircle,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -18,6 +18,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/dashboard/upload', label: 'Upload', icon: Upload, exact: false },
   { href: '/billing', label: 'Billing', icon: CreditCard, exact: false },
+  { href: '/dashboard/profile', label: 'Profile', icon: UserCircle, exact: false },
 ]
 
 export function Sidebar({ userEmail, plan }: SidebarProps) {
@@ -39,8 +40,8 @@ export function Sidebar({ userEmail, plan }: SidebarProps) {
         <Link href="/dashboard" className="flex items-center gap-2.5 text-white font-bold">
           <Cpu className="h-6 w-6 text-blue-400 shrink-0" />
           <span className="text-sm">SpecSense AI</span>
-          {plan === 'pro' && (
-            <span className="ml-auto text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded font-medium">PRO</span>
+          {plan && plan !== 'free' && (
+            <span className="ml-auto text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded font-medium uppercase">{plan.slice(0, 3)}</span>
           )}
         </Link>
       </div>
