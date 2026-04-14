@@ -214,7 +214,7 @@ function BillingContent() {
               ) : (
                 <Button variant="outline" className="w-full" onClick={() => handleUpgrade('enterprise')} loading={loading}>
                   <Zap className="h-4 w-4" />
-                  Contact sales
+                  Get started
                 </Button>
               )}
             </CardContent>

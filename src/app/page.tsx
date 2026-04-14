@@ -157,7 +157,7 @@ export default function HomePage() {
               </ul>
               <Link href="/auth/signup" className="block">
                 <Button variant="outline" className="w-full border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white">
-                  Contact sales
+                  Get started
                 </Button>
               </Link>
             </div>
