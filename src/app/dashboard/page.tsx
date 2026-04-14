@@ -1,31 +1,12 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { formatBytes, formatDate, FREE_PLAN_LIMIT } from '@/lib/utils'
+import { FREE_PLAN_LIMIT } from '@/lib/utils'
 import { PLAN_DOC_LIMITS } from '@/lib/billing/plan'
-import { Upload, FileText, Clock, CheckCircle, AlertCircle, Loader } from 'lucide-react'
-
-function statusBadge(status: string) {
-  const map: Record<string, { variant: 'default' | 'success' | 'warning' | 'danger' | 'info'; label: string }> = {
-    uploaded: { variant: 'info', label: 'Uploaded' },
-    processing: { variant: 'warning', label: 'Processing' },
-    ready: { variant: 'success', label: 'Ready' },
-    error: { variant: 'danger', label: 'Error' },
-  }
-  const s = map[status] ?? { variant: 'default', label: status }
-  return <Badge variant={s.variant}>{s.label}</Badge>
-}
-
-function statusIcon(status: string) {
-  const cls = 'h-5 w-5'
-  if (status === 'ready') return <CheckCircle className={`${cls} text-emerald-500`} />
-  if (status === 'processing') return <Loader className={`${cls} text-amber-500 animate-spin`} />
-  if (status === 'error') return <AlertCircle className={`${cls} text-red-500`} />
-  return <Clock className={`${cls} text-slate-400`} />
-}
+import { DocumentList } from '@/components/document-list'
+import { Upload } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -101,45 +82,12 @@ export default async function DashboardPage() {
       {/* Documents list */}
       <Card>
         <CardHeader>
-          <h2 className="font-semibold text-slate-900">Your documents</h2>
-        </CardHeader>
-        {!documents || documents.length === 0 ? (
-          <CardContent>
-            <div className="text-center py-16">
-              <FileText className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-medium">No documents yet</p>
-              <p className="text-slate-400 text-sm mt-1">Upload your first engineering PDF to get started</p>
-              <Link href="/dashboard/upload" className="mt-6 inline-block">
-                <Button>
-                  <Upload className="h-4 w-4" />
-                  Upload document
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        ) : (
-          <div className="divide-y divide-slate-100">
-            {documents.map((doc) => (
-              <Link
-                key={doc.id}
-                href={`/dashboard/docs/${doc.id}`}
-                className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors group"
-              >
-                <div className="shrink-0">{statusIcon(doc.status)}</div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-slate-900 truncate group-hover:text-blue-600 transition-colors">
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    {(doc as any).filename}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {doc.file_size ? formatBytes(doc.file_size) : '—'} · {formatDate(doc.created_at)}
-                  </p>
-                </div>
-                <div className="shrink-0">{statusBadge(doc.status)}</div>
-              </Link>
-            ))}
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-slate-900">Your documents</h2>
+            <span className="text-xs text-slate-400">{docsTotal} total</span>
           </div>
-        )}
+        </CardHeader>
+        <DocumentList documents={(documents ?? []) as any} />
       </Card>
 
       {!isPaid && (
