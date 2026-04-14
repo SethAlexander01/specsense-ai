@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,7 +11,16 @@ import toast from 'react-hot-toast'
 import Link from 'next/link'
 
 export default function ProfilePage() {
+  return (
+    <Suspense>
+      <ProfileContent />
+    </Suspense>
+  )
+}
+
+function ProfileContent() {
   const supabase = createClient()
+  const searchParams = useSearchParams()
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -26,6 +36,10 @@ export default function ProfilePage() {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
+  useEffect(() => {
+    if (searchParams.get('email_updated') === '1') toast.success('Email updated successfully')
+  }, [searchParams])
 
   useEffect(() => {
     async function load() {

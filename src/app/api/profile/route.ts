@@ -40,8 +40,11 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: 'That is already your current email' }, { status: 400 })
       }
 
-      // Update auth.users directly via admin — updates immediately, no confirmation needed
-      const { error: authError } = await admin.auth.admin.updateUserById(user.id, { email: newEmail })
+      // email_confirm: true skips the confirmation email and updates auth.users immediately
+      const { error: authError } = await admin.auth.admin.updateUserById(user.id, {
+        email: newEmail,
+        email_confirm: true,
+      })
       if (authError) throw authError
 
       // Keep profiles table in sync
