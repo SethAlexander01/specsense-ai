@@ -20,13 +20,23 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json()
     const admin = getAdminClient()
 
-    // --- Update full name (profiles table only) ---
+    // --- Update full name (auth.users metadata + profiles table) ---
     if ('full_name' in body) {
-      const { error } = await supabase
+      const fullName = body.full_name?.trim() ?? ''
+
+      // Update auth.users user_metadata so it shows in the Supabase Users tab
+      const { error: authError } = await admin.auth.admin.updateUserById(user.id, {
+        user_metadata: { full_name: fullName },
+      })
+      if (authError) throw authError
+
+      // Update profiles table
+      const { error: profileError } = await admin
         .from('profiles')
-        .update({ full_name: body.full_name, updated_at: new Date().toISOString() })
+        .update({ full_name: fullName, updated_at: new Date().toISOString() })
         .eq('id', user.id)
-      if (error) throw error
+      if (profileError) throw profileError
+
       return NextResponse.json({ success: true })
     }
 
