@@ -140,14 +140,13 @@ function BillingContent() {
                   </li>
                 ))}
               </ul>
-              {profile?.plan !== 'starter' && !isPaid && (
+              {profile?.plan === 'starter' ? (
+                <Badge variant="success" className="w-full justify-center py-1">Current plan</Badge>
+              ) : (
                 <Button variant="outline" className="w-full" onClick={() => handleUpgrade('starter')} loading={loading}>
                   <Zap className="h-4 w-4" />
-                  Get started
+                  {isPaid ? 'Upgrade' : 'Get started'}
                 </Button>
-              )}
-              {profile?.plan === 'starter' && (
-                <Badge variant="success" className="w-full justify-center py-1">Current plan</Badge>
               )}
             </CardContent>
           </Card>
@@ -177,10 +176,12 @@ function BillingContent() {
                   </li>
                 ))}
               </ul>
-              {profile?.plan !== 'professional' && profile?.plan !== 'enterprise' && (
+              {profile?.plan === 'professional' ? (
+                <Badge variant="success" className="w-full justify-center py-1">Current plan</Badge>
+              ) : (
                 <Button className="w-full" onClick={() => handleUpgrade('professional')} loading={loading}>
                   <Zap className="h-4 w-4" />
-                  {isPaid ? 'Switch plan' : 'Upgrade now'}
+                  {isPaid ? 'Upgrade' : 'Get started'}
                 </Button>
               )}
             </CardContent>
@@ -214,7 +215,7 @@ function BillingContent() {
               ) : (
                 <Button variant="outline" className="w-full" onClick={() => handleUpgrade('enterprise')} loading={loading}>
                   <Zap className="h-4 w-4" />
-                  Get started
+                  {isPaid ? 'Upgrade' : 'Get started'}
                 </Button>
               )}
             </CardContent>
