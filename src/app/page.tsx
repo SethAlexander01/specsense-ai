@@ -9,7 +9,7 @@ export default function HomePage() {
       <nav className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
         <div className="flex items-center gap-2 text-white font-bold text-xl">
           <Cpu className="h-7 w-7 text-blue-400" />
-          SpecSense AI
+          SpecExtract
         </div>
         <div className="flex items-center gap-3">
           <Link href="/auth/login">
@@ -36,7 +36,7 @@ export default function HomePage() {
           <span className="text-blue-400">engineering documents</span>
         </h1>
         <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-          Upload PDFs, drawings, and spec sheets. SpecSense AI extracts materials, tolerances,
+          Upload PDFs, drawings, and spec sheets. SpecExtract extracts materials, tolerances,
           threads, finishes, and standards instantly.
         </p>
         <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -167,7 +167,7 @@ export default function HomePage() {
 
       <footer className="border-t border-slate-700 py-8 text-slate-500 text-sm">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span>&copy; {new Date().getFullYear()} SpecSense AI. Built with Claude AI.</span>
+          <span>&copy; {new Date().getFullYear()} SpecExtract. Built with Claude AI.</span>
           <div className="flex items-center gap-5">
             <Link href="/terms" className="hover:text-slate-300 underline-offset-2 hover:underline">Terms of Service</Link>
             <Link href="/privacy" className="hover:text-slate-300 underline-offset-2 hover:underline">Privacy Policy</Link>

@@ -35,7 +35,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 text-slate-900 font-bold text-xl">
             <Cpu className="h-7 w-7 text-blue-600" />
-            SpecSense AI
+            SpecExtract
           </Link>
           <h1 className="mt-6 text-2xl font-bold text-slate-900">Sign in to your account</h1>
           <p className="mt-2 text-sm text-slate-500">

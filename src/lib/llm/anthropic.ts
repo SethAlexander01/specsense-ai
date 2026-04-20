@@ -178,7 +178,7 @@ export async function answerQuestion(
     ? `\n\nExtracted specifications (JSON):\n${specsJson}`
     : ''
 
-  const system = `You are SpecSense AI, an expert engineering document assistant.
+  const system = `You are SpecExtract, an expert engineering document assistant.
 
 Document: "${filename}"
 

@@ -2,11 +2,11 @@ import Link from 'next/link'
 import { Cpu } from 'lucide-react'
 
 export const metadata = {
-  title: 'Privacy Policy — SpecSense AI',
+  title: 'Privacy Policy — SpecExtract',
 }
 
 const EFFECTIVE_DATE = 'April 13, 2026'
-const CONTACT_EMAIL = 'privacy@specsenseai.com'
+const CONTACT_EMAIL = 'privacy@specextract.com'
 
 export default function PrivacyPage() {
   return (
@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-slate-900">
             <Cpu className="h-5 w-5 text-blue-600" />
-            SpecSense AI
+            SpecExtract
           </Link>
           <div className="flex items-center gap-4 text-sm text-slate-500">
             <Link href="/terms" className="hover:text-slate-900">Terms of Service</Link>
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
         <p className="text-slate-500 text-sm mb-10">Effective date: {EFFECTIVE_DATE}</p>
 
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-10 text-sm text-amber-800">
-          This Privacy Policy explains how SpecSense AI (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) collects, uses, and
+          This Privacy Policy explains how SpecExtract (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) collects, uses, and
           protects your information when you use our service. Please read it carefully.
         </div>
 
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
 
         <Section title="2. How We Use Your Information">
           <ul className="list-disc pl-5 space-y-2 text-slate-700">
-            <li>To provide and operate the SpecSense AI service</li>
+            <li>To provide and operate the SpecExtract service</li>
             <li>To process your documents using AI (via Anthropic&apos;s API)</li>
             <li>To manage your subscription and process payments via Stripe</li>
             <li>To send transactional emails (account confirmation, billing receipts)</li>
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
 
         <Section title="3. Third-Party Services">
           <p className="text-slate-700 mb-3">
-            We rely on the following third-party services to operate SpecSense AI. Your data may be
+            We rely on the following third-party services to operate SpecExtract. Your data may be
             transmitted to or stored by these providers:
           </p>
           <div className="overflow-x-auto">
@@ -162,7 +162,7 @@ export default function PrivacyPage() {
 
         <Section title="8. Children's Privacy">
           <p className="text-slate-700">
-            SpecSense AI is not directed at children under 16 years of age. We do not knowingly collect
+            SpecExtract is not directed at children under 16 years of age. We do not knowingly collect
             personal information from children. If you believe a child has provided us with personal
             data, contact us and we will delete it promptly.
           </p>
@@ -187,7 +187,7 @@ export default function PrivacyPage() {
 
       <footer className="border-t border-slate-200 bg-white mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between text-sm text-slate-400">
-          <span>&copy; {new Date().getFullYear()} SpecSense AI. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} SpecExtract. All rights reserved.</span>
           <div className="flex gap-4">
             <Link href="/terms" className="hover:text-slate-600">Terms</Link>
             <Link href="/privacy" className="hover:text-slate-600">Privacy</Link>

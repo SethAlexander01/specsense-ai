@@ -2,11 +2,11 @@ import Link from 'next/link'
 import { Cpu } from 'lucide-react'
 
 export const metadata = {
-  title: 'Terms of Service — SpecSense AI',
+  title: 'Terms of Service — SpecExtract',
 }
 
 const EFFECTIVE_DATE = 'April 13, 2026'
-const CONTACT_EMAIL = 'legal@specsenseai.com'
+const CONTACT_EMAIL = 'legal@specextract.com'
 
 export default function TermsPage() {
   return (
@@ -16,7 +16,7 @@ export default function TermsPage() {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-slate-900">
             <Cpu className="h-5 w-5 text-blue-600" />
-            SpecSense AI
+            SpecExtract
           </Link>
           <div className="flex items-center gap-4 text-sm text-slate-500">
             <Link href="/privacy" className="hover:text-slate-900">Privacy Policy</Link>
@@ -30,21 +30,21 @@ export default function TermsPage() {
         <p className="text-slate-500 text-sm mb-10">Effective date: {EFFECTIVE_DATE}</p>
 
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-10 text-sm text-blue-800">
-          Please read these Terms of Service carefully before using SpecSense AI. By creating an
+          Please read these Terms of Service carefully before using SpecExtract. By creating an
           account or using the service, you agree to be bound by these terms.
         </div>
 
         <Section title="1. Acceptance of Terms">
           <p className="text-slate-700">
-            These Terms of Service (&quot;Terms&quot;) govern your access to and use of SpecSense AI
-            (&quot;Service&quot;), operated by SpecSense AI (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). By accessing or using the
+            These Terms of Service (&quot;Terms&quot;) govern your access to and use of SpecExtract
+            (&quot;Service&quot;), operated by SpecExtract (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). By accessing or using the
             Service, you agree to these Terms. If you do not agree, do not use the Service.
           </p>
         </Section>
 
         <Section title="2. Description of Service">
           <p className="text-slate-700">
-            SpecSense AI is a software-as-a-service platform that allows users to upload engineering
+            SpecExtract is a software-as-a-service platform that allows users to upload engineering
             documents and technical drawings, extract structured specifications using AI, chat with
             document content, and export formatted PDF reports. The AI analysis is powered by
             Anthropic&apos;s Claude models.
@@ -63,7 +63,7 @@ export default function TermsPage() {
 
         <Section title="4. Subscriptions and Billing">
           <SubSection title="Plans">
-            SpecSense AI offers free and paid subscription plans. Paid plans are billed monthly and
+            SpecExtract offers free and paid subscription plans. Paid plans are billed monthly and
             include increased document limits and access to premium features (AI chat, PDF export).
             Current pricing is displayed on our billing page.
           </SubSection>
@@ -89,7 +89,7 @@ export default function TermsPage() {
         </Section>
 
         <Section title="5. Acceptable Use">
-          <p className="text-slate-700 mb-3">You agree not to use SpecSense AI to:</p>
+          <p className="text-slate-700 mb-3">You agree not to use SpecExtract to:</p>
           <ul className="list-disc pl-5 space-y-2 text-slate-700">
             <li>Upload documents containing classified, ITAR-controlled, or export-controlled technical data unless you have independently verified compliance with applicable export laws.</li>
             <li>Violate any applicable local, national, or international law or regulation.</li>
@@ -130,7 +130,7 @@ export default function TermsPage() {
 
         <Section title="8. Intellectual Property">
           <p className="text-slate-700">
-            The SpecSense AI platform, including its software, design, trademarks, and content (excluding
+            The SpecExtract platform, including its software, design, trademarks, and content (excluding
             your uploaded documents), is owned by us and protected by intellectual property laws. You
             may not copy, modify, distribute, or create derivative works based on the Service without
             our prior written consent.
@@ -160,7 +160,7 @@ export default function TermsPage() {
 
         <Section title="11. Indemnification">
           <p className="text-slate-700">
-            You agree to indemnify and hold harmless SpecSense AI and its affiliates from any claims,
+            You agree to indemnify and hold harmless SpecExtract and its affiliates from any claims,
             damages, losses, or expenses (including reasonable legal fees) arising from your use of
             the Service, your violation of these Terms, or your infringement of any third-party rights.
           </p>
@@ -201,7 +201,7 @@ export default function TermsPage() {
 
       <footer className="border-t border-slate-200 bg-white mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between text-sm text-slate-400">
-          <span>&copy; {new Date().getFullYear()} SpecSense AI. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} SpecExtract. All rights reserved.</span>
           <div className="flex gap-4">
             <Link href="/terms" className="hover:text-slate-600">Terms</Link>
             <Link href="/privacy" className="hover:text-slate-600">Privacy</Link>

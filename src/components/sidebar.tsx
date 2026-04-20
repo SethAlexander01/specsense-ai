@@ -39,7 +39,7 @@ export function Sidebar({ userEmail, plan }: SidebarProps) {
       <div className="px-5 py-5 border-b border-slate-800">
         <Link href="/dashboard" className="flex items-center gap-2.5 text-white font-bold">
           <Cpu className="h-6 w-6 text-blue-400 shrink-0" />
-          <span className="text-sm">SpecSense AI</span>
+          <span className="text-sm">SpecExtract</span>
           {plan && plan !== 'free' && (
             <span className="ml-auto text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded font-medium uppercase">{plan.slice(0, 3)}</span>
           )}
