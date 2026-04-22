@@ -5,8 +5,8 @@ export const metadata = {
   title: 'Privacy Policy — SpecExtract',
 }
 
-const EFFECTIVE_DATE = 'April 13, 2026'
-const CONTACT_EMAIL = 'privacy@specextract.com'
+const EFFECTIVE_DATE = 'April 21, 2026'
+const CONTACT_EMAIL = 'specextract@specextract.com'
 
 export default function PrivacyPage() {
   return (
