@@ -5,8 +5,8 @@ export const metadata = {
   title: 'Terms of Service — SpecExtract',
 }
 
-const EFFECTIVE_DATE = 'April 13, 2026'
-const CONTACT_EMAIL = 'legal@specextract.com'
+const EFFECTIVE_DATE = 'April 21, 2026'
+const CONTACT_EMAIL = 'specextract@specextract.com'
 
 export default function TermsPage() {
   return (
