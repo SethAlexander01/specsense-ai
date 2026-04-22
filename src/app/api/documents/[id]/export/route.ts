@@ -31,6 +31,7 @@ export async function GET(
       .select('*')
       .eq('id', documentId)
       .eq('user_id', user.id)
+      .is('deleted_at', null)
       .single() as { data: any }
 
     if (!docData) return NextResponse.json({ error: 'Document not found' }, { status: 404 })

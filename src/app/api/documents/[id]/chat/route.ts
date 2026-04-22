@@ -146,6 +146,7 @@ export async function POST(
       .select('filename, extracted_specs')
       .eq('id', documentId)
       .eq('user_id', user.id)
+      .is('deleted_at', null)
       .single() as { data: any }
 
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 })

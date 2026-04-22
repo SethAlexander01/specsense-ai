@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     // Documents now carry extracted_specs directly (no separate specs table)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: docData } = await supabase
-      .from('documents').select('*').eq('id', documentId).eq('user_id', user.id).single() as { data: any }
+      .from('documents').select('*').eq('id', documentId).eq('user_id', user.id).is('deleted_at', null).single() as { data: any }
 
     const doc = docData as Document | null
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 })

@@ -12,10 +12,12 @@ export async function DELETE(
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
   // Fetch document to verify ownership and get storage path
+  // Only allow deleting non-deleted docs
   const { data: doc, error: fetchErr } = await supabase
     .from('documents')
     .select('id, user_id, storage_path')
     .eq('id', id)
+    .is('deleted_at', null)
     .single() as { data: { id: string; user_id: string; storage_path: string | null } | null; error: unknown }
 
   if (fetchErr || !doc) {
@@ -25,22 +27,25 @@ export async function DELETE(
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  // Delete file from storage if it exists
+  // Delete file from storage (free up space)
   if (doc.storage_path) {
     const { error: storageErr } = await supabase.storage
       .from('documents')
       .remove([doc.storage_path])
-
     if (storageErr) {
       console.error('[delete] storage remove error:', storageErr)
-      // Non-fatal — proceed with DB deletion even if storage fails
+      // Non-fatal — proceed with soft-delete even if storage fails
     }
   }
 
-  // Delete document row — chunks and messages cascade automatically
+  // Delete chunks and messages — cascade won't fire on a soft-delete UPDATE
+  await supabase.from('doc_chunks').delete().eq('document_id', id)
+  await supabase.from('chat_messages').delete().eq('document_id', id)
+
+  // Soft-delete the document row so it still counts toward monthly upload limit
   const { error: deleteErr } = await supabase
     .from('documents')
-    .delete()
+    .update({ deleted_at: new Date().toISOString(), storage_path: null })
     .eq('id', id)
 
   if (deleteErr) {

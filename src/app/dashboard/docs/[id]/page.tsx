@@ -12,7 +12,7 @@ export default async function DocPage({ params }: { params: Promise<{ id: string
 
   // Specs now live in documents.extracted_specs (jsonb) — no separate specs table
   const [{ data: docData }, { data: chatHistory }, { data: profileData }, { count: chunkCount }] = await Promise.all([
-    supabase.from('documents').select('*').eq('id', id).eq('user_id', user.id).single(),
+    supabase.from('documents').select('*').eq('id', id).eq('user_id', user.id).is('deleted_at', null).single(),
     supabase.from('chat_messages').select('*').eq('document_id', id).eq('user_id', user.id).order('created_at', { ascending: true }),
     supabase.from('profiles').select('plan').eq('id', user.id).single(),
     supabase.from('doc_chunks').select('*', { count: 'exact', head: true }).eq('document_id', id),

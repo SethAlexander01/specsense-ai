@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     // Fetch document + chunks in parallel
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [{ data: docRow }, { data: chunks }, { data: history }] = await Promise.all([
-      supabase.from('documents').select('filename, extracted_text, extracted_specs').eq('id', documentId).eq('user_id', user.id).single(),
+      supabase.from('documents').select('filename, extracted_text, extracted_specs').eq('id', documentId).eq('user_id', user.id).is('deleted_at', null).single(),
       supabase.from('doc_chunks').select('content, chunk_index').eq('document_id', documentId).order('chunk_index').limit(15),
       supabase.from('chat_messages').select('role, content').eq('document_id', documentId).eq('user_id', user.id).order('created_at', { ascending: true }).limit(20),
     ]) as [{ data: any }, { data: any }, { data: any }]

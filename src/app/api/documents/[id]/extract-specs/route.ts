@@ -27,6 +27,7 @@ export async function POST(
       .select('extracted_text, status, storage_path, mime_type')
       .eq('id', documentId)
       .eq('user_id', user.id)
+      .is('deleted_at', null)
       .single() as { data: any }
 
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 })

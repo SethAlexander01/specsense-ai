@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     // Fetch document — user_id enforces ownership
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: doc } = await supabase
-      .from('documents').select('*').eq('id', documentId).eq('user_id', user.id).single() as { data: any }
+      .from('documents').select('*').eq('id', documentId).eq('user_id', user.id).is('deleted_at', null).single() as { data: any }
 
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 })
 

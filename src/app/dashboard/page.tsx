@@ -13,9 +13,18 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profileData }, { data: documents }] = await Promise.all([
+  // Monthly start — UTC so it matches checkDocLimit exactly
+  const now = new Date()
+  const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
+
+  const [{ data: profileData }, { data: documents }, { count: monthCount }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('documents').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
+    // List: exclude soft-deleted docs
+    supabase.from('documents').select('*').eq('user_id', user.id).is('deleted_at', null).order('created_at', { ascending: false }),
+    // Monthly count: include soft-deleted so deletions don't restore quota
+    supabase.from('documents').select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', startOfMonth.toISOString()),
   ])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,10 +35,7 @@ export default async function DashboardPage() {
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1)
   const planLimit = PLAN_DOC_LIMITS[plan] ?? FREE_PLAN_LIMIT
 
-  // Monthly count — must match checkDocLimit in plan.ts (UTC month boundary)
-  const now = new Date()
-  const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
-  const docsThisMonth = documents?.filter(d => new Date(d.created_at) >= startOfMonth).length ?? 0
+  const docsThisMonth = monthCount ?? 0
   const docsTotal = documents?.length ?? 0
 
   const canUpload = planLimit === Infinity || docsThisMonth < planLimit
