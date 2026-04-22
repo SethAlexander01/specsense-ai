@@ -6,9 +6,9 @@ export const metadata = {
 }
 
 const EFFECTIVE_DATE    = 'April 22, 2026'
-const CONTACT_EMAIL     = 'privacy@specextract.com'
-const ENTITY_NAME       = '[LEGAL ENTITY NAME]'      // TODO: replace with registered entity
-const BUSINESS_ADDRESS  = '[BUSINESS ADDRESS]'        // TODO: replace before launch
+const CONTACT_EMAIL     = 'specextract@specextract.com'
+const ENTITY_NAME       = 'Seth A Alexander'      // TODO: replace with registered entity
+const BUSINESS_ADDRESS  = '112 W Hopkins Ave'        // TODO: replace before launch
 
 export default function PrivacyPage() {
   return (
