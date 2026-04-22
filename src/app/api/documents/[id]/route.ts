@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params
-  const supabase = await createClient()
 
+  // User client — for auth only
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
+  // Service client — bypasses RLS for writes (ownership verified below in code)
+  const admin = await createServiceClient()
+
   // Fetch document to verify ownership and get storage path
-  // Only allow deleting non-deleted docs
-  const { data: doc, error: fetchErr } = await supabase
+  const { data: doc, error: fetchErr } = await admin
     .from('documents')
     .select('id, user_id, storage_path')
     .eq('id', id)
@@ -29,7 +32,7 @@ export async function DELETE(
 
   // Delete file from storage (free up space)
   if (doc.storage_path) {
-    const { error: storageErr } = await supabase.storage
+    const { error: storageErr } = await admin.storage
       .from('documents')
       .remove([doc.storage_path])
     if (storageErr) {
@@ -39,11 +42,11 @@ export async function DELETE(
   }
 
   // Delete chunks and messages — cascade won't fire on a soft-delete UPDATE
-  await supabase.from('doc_chunks').delete().eq('document_id', id)
-  await supabase.from('chat_messages').delete().eq('document_id', id)
+  await admin.from('doc_chunks').delete().eq('document_id', id)
+  await admin.from('chat_messages').delete().eq('document_id', id)
 
   // Soft-delete the document row so it still counts toward monthly upload limit
-  const { error: deleteErr } = await supabase
+  const { error: deleteErr } = await admin
     .from('documents')
     .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
