@@ -111,6 +111,13 @@ export default function TermsPage() {
             and transmit your content solely for the purpose of providing the Service to you. This
             includes sending document content to Anthropic&apos;s API for AI analysis.
           </SubSection>
+          <SubSection title="Deletion">
+            You may permanently delete any document you have uploaded at any time from your dashboard.
+            Deletion removes the file from our storage and all associated extracted data, AI chat
+            history, and processed chunks from our database. Deletion is immediate and irreversible —
+            deleted documents cannot be recovered. We may retain anonymised, aggregated usage statistics
+            that do not identify you or your content.
+          </SubSection>
           <SubSection title="Responsibility">
             You are solely responsible for the documents you upload. You must have the right to upload
             and process each document. We are not responsible for any third-party IP infringement
@@ -148,7 +155,7 @@ export default function TermsPage() {
 
         <Section title="10. Limitation of Liability">
           <p className="text-slate-700">
-            TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL SPECSENSE AI, ITS OFFICERS,
+            TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL SPECEXTRACT, ITS OFFICERS,
             DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
             CONSEQUENTIAL, OR PUNITIVE DAMAGES — INCLUDING LOSS OF PROFITS, DATA, OR BUSINESS —
             ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICE, EVEN IF WE HAVE BEEN ADVISED OF
