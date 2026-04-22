@@ -45,7 +45,7 @@ export async function DELETE(
   // Soft-delete the document row so it still counts toward monthly upload limit
   const { error: deleteErr } = await supabase
     .from('documents')
-    .update({ deleted_at: new Date().toISOString(), storage_path: null })
+    .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
 
   if (deleteErr) {
