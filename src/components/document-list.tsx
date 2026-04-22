@@ -94,13 +94,14 @@ export function DocumentList({ documents: initial }: { documents: Doc[] }) {
     <>
       <div className="divide-y divide-slate-100">
         {shown.map((doc) => (
-          <div key={doc.id} className="relative group">
+          <div key={doc.id} className="group flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors">
+            {/* Clickable area — icon + filename */}
             <Link
               href={`/dashboard/docs/${doc.id}`}
-              className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-4 flex-1 min-w-0"
             >
               <div className="shrink-0">{statusIcon(doc.status)}</div>
-              <div className="flex-1 min-w-0 pr-8">
+              <div className="min-w-0">
                 <p className="font-medium text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                   {doc.filename}
                 </p>
@@ -108,24 +109,25 @@ export function DocumentList({ documents: initial }: { documents: Doc[] }) {
                   {doc.file_size ? formatBytes(doc.file_size) : '—'} · {formatDate(doc.created_at)}
                 </p>
               </div>
-              <div className="shrink-0">{statusBadge(doc.status)}</div>
             </Link>
 
-            {/* Delete button — floats over the row */}
-            <button
-              onClick={(e) => handleDelete(e, doc)}
-              disabled={deleting === doc.id}
-              title="Delete document"
-              className="absolute right-16 top-1/2 -translate-y-1/2 p-1.5 rounded-md
-                         text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors
-                         opacity-0 group-hover:opacity-100 focus:opacity-100
-                         disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {deleting === doc.id
-                ? <Loader className="h-4 w-4 animate-spin" />
-                : <Trash2 className="h-4 w-4" />
-              }
-            </button>
+            {/* Badge + delete button — always on the right, side by side */}
+            <div className="flex items-center gap-2 shrink-0">
+              {statusBadge(doc.status)}
+              <button
+                onClick={(e) => handleDelete(e, doc)}
+                disabled={deleting === doc.id}
+                title="Delete document"
+                className="p-1.5 rounded-md text-slate-300 hover:text-red-500 hover:bg-red-50
+                           transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100
+                           disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deleting === doc.id
+                  ? <Loader className="h-4 w-4 animate-spin" />
+                  : <Trash2 className="h-4 w-4" />
+                }
+              </button>
+            </div>
           </div>
         ))}
       </div>
