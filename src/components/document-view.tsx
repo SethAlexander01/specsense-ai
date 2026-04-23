@@ -159,9 +159,9 @@ export function DocumentView({ doc, initialMessages, isPro, canChat, chunkCount 
   const canExtract = !!doc.storage_path || hasText
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-6">
+    <main className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <Link href="/dashboard" prefetch={false}>
             <Button variant="ghost" size="sm">
@@ -180,7 +180,7 @@ export function DocumentView({ doc, initialMessages, isPro, canChat, chunkCount 
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
+        <div className="flex items-center gap-2 flex-wrap">
           <StatusBadge status={doc.status} />
           <Button
             variant="outline" size="sm"
@@ -649,7 +649,7 @@ function SpecsPanel({ specs, docFilename }: { specs: ExtractedSpecs; docFilename
                 if (!val) return null
                 return (
                   <div key={key} className="flex gap-4 py-2.5 first:pt-0 last:pb-0">
-                    <dt className="w-36 shrink-0 text-xs font-medium text-slate-500 uppercase tracking-wide pt-0.5">{label}</dt>
+                    <dt className="w-24 sm:w-36 shrink-0 text-xs font-medium text-slate-500 uppercase tracking-wide pt-0.5">{label}</dt>
                     <dd className="text-sm text-slate-900 flex-1">{val}</dd>
                   </div>
                 )

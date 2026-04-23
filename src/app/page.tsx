@@ -26,16 +26,16 @@ export default function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-4 pt-20 pb-32 text-center">
+      <section className="max-w-5xl mx-auto px-4 pt-12 sm:pt-20 pb-16 sm:pb-32 text-center">
         <div className="inline-flex items-center gap-2 bg-blue-900/40 text-blue-300 border border-blue-700/50 rounded-full px-4 py-1.5 text-sm mb-8">
           <Zap className="h-3.5 w-3.5" />
           Powered by Claude AI
         </div>
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
           Extract specs from<br />
           <span className="text-blue-400">engineering documents</span>
         </h1>
-        <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
+        <p className="text-lg sm:text-xl text-slate-300 mb-8 sm:mb-10 max-w-2xl mx-auto">
           Upload PDFs, drawings, and spec sheets. SpecExtract extracts materials, tolerances,
           threads, finishes, and standards instantly.
         </p>

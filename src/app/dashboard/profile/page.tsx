@@ -135,7 +135,7 @@ function ProfileContent() {
   }
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 sm:p-8 max-w-2xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Profile</h1>
         <p className="text-slate-500 text-sm mt-1">Manage your account information and security settings.</p>
@@ -144,19 +144,19 @@ function ProfileContent() {
       {/* Account summary */}
       <Card className="mb-6">
         <CardContent className="py-5">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <div className="h-14 w-14 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
               <User className="h-7 w-7 text-blue-600" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="font-semibold text-slate-900 truncate">{fullName || email}</p>
               <p className="text-sm text-slate-500 truncate">{email}</p>
-              <div className="flex items-center gap-2 mt-1.5">
+              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                 <Badge variant={planInfo.color}>{planInfo.label}</Badge>
                 <span className="text-xs text-slate-400">Member since {memberSince}</span>
               </div>
             </div>
-            <Link href="/billing" className="ml-auto shrink-0">
+            <Link href="/billing" className="shrink-0">
               <Button variant="outline" size="sm">
                 <Shield className="h-3.5 w-3.5" />
                 Manage plan

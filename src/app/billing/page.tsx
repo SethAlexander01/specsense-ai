@@ -77,7 +77,7 @@ function BillingContent() {
     <div className="min-h-screen bg-slate-50">
       <Navbar userEmail={userEmail} plan={profile?.plan} />
 
-      <main className="max-w-6xl mx-auto px-4 py-12">
+      <main className="max-w-6xl mx-auto px-4 py-6 sm:py-12">
         <div className="mb-10">
           <h1 className="text-2xl font-bold text-slate-900">Billing & Plan</h1>
           <p className="text-slate-500 text-sm mt-1">Manage your subscription and billing.</p>
@@ -93,22 +93,22 @@ function BillingContent() {
           </CardHeader>
           <CardContent>
             {isPaid ? (
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <p className="font-medium text-slate-900">{currentPlanInfo?.name} — {currentPlanInfo?.price}</p>
                   <p className="text-sm text-slate-500 mt-1">Unlimited documents, AI chat, PDF export</p>
                 </div>
-                <Button variant="outline" onClick={handlePortal} loading={loading}>
+                <Button variant="outline" onClick={handlePortal} loading={loading} className="sm:shrink-0">
                   Manage subscription
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <p className="font-medium text-slate-900">No active plan</p>
                   <p className="text-sm text-slate-500 mt-1">Choose a plan below to unlock full access</p>
                 </div>
-                <Button onClick={() => handleUpgrade()} loading={loading}>
+                <Button onClick={() => handleUpgrade()} loading={loading} className="sm:shrink-0">
                   <Zap className="h-4 w-4" />
                   View plans
                 </Button>

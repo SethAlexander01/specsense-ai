@@ -41,9 +41,9 @@ export default async function DashboardPage() {
   const canUpload = planLimit === Infinity || docsThisMonth < planLimit
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">
             {profile?.full_name ? `Welcome, ${profile.full_name.split(' ')[0]}` : 'Dashboard'}
