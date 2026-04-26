@@ -15,7 +15,7 @@ export async function POST() {
       .single()
 
     if (!profile?.stripe_customer_id) {
-      return NextResponse.json({ error: 'No billing account found' }, { status: 404 })
+      return NextResponse.json({ error: 'No active subscription found. Please subscribe to a plan first.' }, { status: 404 })
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
@@ -28,6 +28,6 @@ export async function POST() {
     return NextResponse.json({ url: session.url })
   } catch (err) {
     console.error('Portal error:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Unable to open billing portal. Please try again or contact support.' }, { status: 500 })
   }
 }

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     const priceId = PRICE_IDS[plan]
     if (!priceId) {
-      return NextResponse.json({ error: `No price configured for plan: ${plan}` }, { status: 400 })
+      return NextResponse.json({ error: 'This plan is not available right now. Please try again later.' }, { status: 400 })
     }
 
     const supabase = await createClient()
@@ -51,8 +51,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err)
-    console.error('Checkout error:', message)
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('Checkout error:', err)
+    return NextResponse.json({ error: 'Unable to start checkout. Please try again or contact support.' }, { status: 500 })
   }
 }
