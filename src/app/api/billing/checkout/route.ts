@@ -25,10 +25,6 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single() as any
 
-    if (profile?.plan === 'pro') {
-      return NextResponse.json({ error: 'Already on Pro plan' }, { status: 400 })
-    }
-
     let customerId: string | undefined = profile?.stripe_customer_id
 
     if (!customerId) {
@@ -55,7 +51,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (err) {
-    console.error('Checkout error:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('Checkout error:', message)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
