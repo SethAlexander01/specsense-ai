@@ -162,7 +162,7 @@ export default function HomePage() {
               </ul>
               <Link href="/auth/signup" className="block">
                 <Button className="w-full bg-white text-blue-700 hover:bg-white/90 font-semibold">
-                  Start free trial
+                  Get started
                 </Button>
               </Link>
             </div>
