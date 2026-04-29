@@ -3,7 +3,7 @@
 //  To END a sale:   set SALE_ENABLED back to false.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const SALE_ENABLED = FALSE
+export const SALE_ENABLED = TRUE
 
 export const SALE_BADGE = '50% OFF'   // text shown on each plan card
 export const SALE_ENDS  = 'May 28'   // urgency line shown under the section header (set to '' to hide)
