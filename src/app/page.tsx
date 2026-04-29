@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Cpu, FileText, MessageSquare, Download, Shield, Zap } from 'lucide-react'
+import { SALE_ENABLED, SALE_BADGE, SALE_ENDS, PLANS, activePrice } from '@/lib/sale'
 
 export default function HomePage() {
   return (
@@ -91,15 +92,33 @@ export default function HomePage() {
       <section className="py-24">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Simple pricing</h2>
-          <p className="text-slate-400 text-center mb-12">Choose the plan that fits your team</p>
+          {SALE_ENABLED && SALE_ENDS ? (
+            <p className="text-center mb-12">
+              <span className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full px-4 py-1.5 text-sm font-medium">
+                <Zap className="h-3.5 w-3.5" />
+                Limited-time sale — ends {SALE_ENDS}
+              </span>
+            </p>
+          ) : (
+            <p className="text-slate-400 text-center mb-12">Choose the plan that fits your team</p>
+          )}
           <div className="grid md:grid-cols-3 gap-8">
             {/* Starter */}
-            <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 flex flex-col">
-              <h3 className="text-xl font-bold text-white mb-1">Starter</h3>
-              <p className="text-4xl font-bold text-white mt-4 mb-2">
-                $79<span className="text-lg text-slate-400 font-normal">/mo</span>
-              </p>
-              <p className="text-slate-400 text-sm mb-8">20 drawings per month</p>
+            <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 flex flex-col relative overflow-hidden">
+              {SALE_ENABLED && (
+                <div className="absolute top-4 right-4 bg-amber-500 text-white text-xs px-2 py-1 rounded font-bold">
+                  {SALE_BADGE}
+                </div>
+              )}
+              <h3 className="text-xl font-bold text-white mb-1">{PLANS.starter.name}</h3>
+              <div className="mt-4 mb-2">
+                {SALE_ENABLED && (
+                  <span className="text-slate-500 line-through text-lg mr-2">${PLANS.starter.regularPrice}</span>
+                )}
+                <span className="text-4xl font-bold text-white">${activePrice('starter')}</span>
+                <span className="text-lg text-slate-400 font-normal">/mo</span>
+              </div>
+              <p className="text-slate-400 text-sm mb-8">{PLANS.starter.limit}</p>
               <ul className="space-y-3 text-sm text-slate-300 mb-8 flex-1">
                 {['20 drawing uploads', 'Spec extraction', 'View extracted data', 'PDF report export'].map((f) => (
                   <li key={f} className="flex items-center gap-2">
@@ -117,14 +136,22 @@ export default function HomePage() {
 
             {/* Professional */}
             <div className="bg-blue-600 rounded-xl p-8 border border-blue-500 relative overflow-hidden flex flex-col">
-              <div className="absolute top-4 right-4 bg-white/20 text-white text-xs px-2 py-1 rounded font-medium">
-                Most popular
+              <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+                {SALE_ENABLED ? (
+                  <span className="bg-amber-500 text-white text-xs px-2 py-1 rounded font-bold">{SALE_BADGE}</span>
+                ) : (
+                  <span className="bg-white/20 text-white text-xs px-2 py-1 rounded font-medium">Most popular</span>
+                )}
               </div>
-              <h3 className="text-xl font-bold text-white mb-1">Professional</h3>
-              <p className="text-4xl font-bold text-white mt-4 mb-2">
-                $249<span className="text-lg text-white/70 font-normal">/mo</span>
-              </p>
-              <p className="text-white/70 text-sm mb-8">200 drawings per month</p>
+              <h3 className="text-xl font-bold text-white mb-1">{PLANS.professional.name}</h3>
+              <div className="mt-4 mb-2">
+                {SALE_ENABLED && (
+                  <span className="text-white/50 line-through text-lg mr-2">${PLANS.professional.regularPrice}</span>
+                )}
+                <span className="text-4xl font-bold text-white">${activePrice('professional')}</span>
+                <span className="text-lg text-white/70 font-normal">/mo</span>
+              </div>
+              <p className="text-white/70 text-sm mb-8">{PLANS.professional.limit}</p>
               <ul className="space-y-3 text-sm text-white mb-8 flex-1">
                 {['200 drawing uploads', 'Spec extraction', 'AI chat with docs', 'PDF report export', 'Priority processing'].map((f) => (
                   <li key={f} className="flex items-center gap-2">
@@ -141,12 +168,21 @@ export default function HomePage() {
             </div>
 
             {/* Enterprise */}
-            <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 flex flex-col">
-              <h3 className="text-xl font-bold text-white mb-1">Enterprise</h3>
-              <p className="text-4xl font-bold text-white mt-4 mb-2">
-                $499<span className="text-lg text-slate-400 font-normal">/mo</span>
-              </p>
-              <p className="text-slate-400 text-sm mb-8">Unlimited drawings</p>
+            <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 flex flex-col relative overflow-hidden">
+              {SALE_ENABLED && (
+                <div className="absolute top-4 right-4 bg-amber-500 text-white text-xs px-2 py-1 rounded font-bold">
+                  {SALE_BADGE}
+                </div>
+              )}
+              <h3 className="text-xl font-bold text-white mb-1">{PLANS.enterprise.name}</h3>
+              <div className="mt-4 mb-2">
+                {SALE_ENABLED && (
+                  <span className="text-slate-500 line-through text-lg mr-2">${PLANS.enterprise.regularPrice}</span>
+                )}
+                <span className="text-4xl font-bold text-white">${activePrice('enterprise')}</span>
+                <span className="text-lg text-slate-400 font-normal">/mo</span>
+              </div>
+              <p className="text-slate-400 text-sm mb-8">{PLANS.enterprise.limit}</p>
               <ul className="space-y-3 text-sm text-slate-300 mb-8 flex-1">
                 {['Unlimited drawing uploads', 'Spec extraction', 'AI chat with docs', 'PDF report export', 'Priority processing', 'Dedicated support'].map((f) => (
                   <li key={f} className="flex items-center gap-2">

@@ -11,6 +11,7 @@ import { CheckCircle, Zap, Shield, FileText, MessageSquare, Download } from 'luc
 import toast from 'react-hot-toast'
 import { Suspense } from 'react'
 import { LegalFooter } from '@/components/ui/legal-footer'
+import { SALE_ENABLED, SALE_BADGE, SALE_ENDS, PLANS, activePrice } from '@/lib/sale'
 
 function BillingContent() {
   const searchParams = useSearchParams()
@@ -67,9 +68,9 @@ function BillingContent() {
   const isPaid = PAID_PLANS.includes(profile?.plan ?? '')
 
   const PLAN_LABELS: Record<string, { name: string; price: string }> = {
-    starter:      { name: 'Starter', price: '$79/month' },
-    professional: { name: 'Professional', price: '$249/month' },
-    enterprise:   { name: 'Enterprise', price: '$499/month' },
+    starter:      { name: PLANS.starter.name,      price: `$${activePrice('starter')}/month` },
+    professional: { name: PLANS.professional.name, price: `$${activePrice('professional')}/month` },
+    enterprise:   { name: PLANS.enterprise.name,   price: `$${activePrice('enterprise')}/month` },
   }
   const currentPlanInfo = profile?.plan ? PLAN_LABELS[profile.plan] : null
 
@@ -118,13 +119,28 @@ function BillingContent() {
         </Card>
 
         {/* Plan comparison */}
+        {SALE_ENABLED && SALE_ENDS && (
+          <div className="mb-6 flex items-center justify-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 font-medium">
+            <Zap className="h-4 w-4 text-amber-500 shrink-0" />
+            Limited-time sale — ends {SALE_ENDS}
+          </div>
+        )}
         <div className="grid md:grid-cols-3 gap-6">
           {/* Starter */}
-          <Card>
+          <Card className="relative overflow-hidden">
+            {SALE_ENABLED && (
+              <div className="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-0.5 rounded font-bold">{SALE_BADGE}</div>
+            )}
             <CardHeader>
-              <h3 className="font-semibold text-slate-900">Starter</h3>
-              <p className="text-3xl font-bold text-slate-900 mt-2">$79<span className="text-base font-normal text-slate-500">/mo</span></p>
-              <p className="text-xs text-slate-500 mt-1">20 drawings/month</p>
+              <h3 className="font-semibold text-slate-900">{PLANS.starter.name}</h3>
+              <div className="mt-2">
+                {SALE_ENABLED && (
+                  <span className="text-slate-400 line-through text-sm mr-1">${PLANS.starter.regularPrice}</span>
+                )}
+                <span className="text-3xl font-bold text-slate-900">${activePrice('starter')}</span>
+                <span className="text-base font-normal text-slate-500">/mo</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">{PLANS.starter.limit}</p>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 mb-6">
@@ -152,14 +168,23 @@ function BillingContent() {
           </Card>
 
           {/* Professional */}
-          <Card className={profile?.plan === 'professional' ? 'ring-2 ring-blue-500' : 'border-blue-200 bg-blue-50/30'}>
+          <Card className={`relative overflow-hidden ${profile?.plan === 'professional' ? 'ring-2 ring-blue-500' : 'border-blue-200 bg-blue-50/30'}`}>
+            {SALE_ENABLED && (
+              <div className="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-0.5 rounded font-bold">{SALE_BADGE}</div>
+            )}
             <CardHeader>
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-slate-900">Professional</h3>
+                <h3 className="font-semibold text-slate-900">{PLANS.professional.name}</h3>
                 {profile?.plan === 'professional' && <Badge variant="success">Current plan</Badge>}
               </div>
-              <p className="text-3xl font-bold text-slate-900 mt-2">$249<span className="text-base font-normal text-slate-500">/mo</span></p>
-              <p className="text-xs text-slate-500 mt-1">200 drawings/month</p>
+              <div className="mt-2">
+                {SALE_ENABLED && (
+                  <span className="text-slate-400 line-through text-sm mr-1">${PLANS.professional.regularPrice}</span>
+                )}
+                <span className="text-3xl font-bold text-slate-900">${activePrice('professional')}</span>
+                <span className="text-base font-normal text-slate-500">/mo</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">{PLANS.professional.limit}</p>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 mb-6">
@@ -188,11 +213,20 @@ function BillingContent() {
           </Card>
 
           {/* Enterprise */}
-          <Card>
+          <Card className="relative overflow-hidden">
+            {SALE_ENABLED && (
+              <div className="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-0.5 rounded font-bold">{SALE_BADGE}</div>
+            )}
             <CardHeader>
-              <h3 className="font-semibold text-slate-900">Enterprise</h3>
-              <p className="text-3xl font-bold text-slate-900 mt-2">$499<span className="text-base font-normal text-slate-500">/mo</span></p>
-              <p className="text-xs text-slate-500 mt-1">Unlimited drawings</p>
+              <h3 className="font-semibold text-slate-900">{PLANS.enterprise.name}</h3>
+              <div className="mt-2">
+                {SALE_ENABLED && (
+                  <span className="text-slate-400 line-through text-sm mr-1">${PLANS.enterprise.regularPrice}</span>
+                )}
+                <span className="text-3xl font-bold text-slate-900">${activePrice('enterprise')}</span>
+                <span className="text-base font-normal text-slate-500">/mo</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">{PLANS.enterprise.limit}</p>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 mb-6">
