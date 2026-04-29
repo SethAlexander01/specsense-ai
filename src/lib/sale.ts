@@ -3,31 +3,31 @@
 //  To END a sale:   set SALE_ENABLED back to false.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const SALE_ENABLED = false
+export const SALE_ENABLED = FALSE
 
-export const SALE_BADGE = '20% OFF'   // text shown on each plan card
-export const SALE_ENDS  = 'May 31'   // urgency line shown under the section header (set to '' to hide)
+export const SALE_BADGE = '50% OFF'   // text shown on each plan card
+export const SALE_ENDS  = 'May 28'   // urgency line shown under the section header (set to '' to hide)
 
 export const PLANS = {
   starter: {
     name:         'Starter',
     regularPrice: 79,
-    salePrice:    63,
-    period:       '/mo',
+    salePrice:    39.5,
+    period:       '3/mo',
     limit:        '20 drawings per month',
   },
   professional: {
     name:         'Professional',
     regularPrice: 249,
-    salePrice:    199,
-    period:       '/mo',
+    salePrice:    124.5,
+    period:       '3/mo',
     limit:        '200 drawings per month',
   },
   enterprise: {
     name:         'Enterprise',
     regularPrice: 499,
-    salePrice:    399,
-    period:       '/mo',
+    salePrice:    249.5,
+    period:       '3/mo',
     limit:        'Unlimited drawings',
   },
 } as const
